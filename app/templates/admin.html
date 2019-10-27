@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block app_content %}
+        <h1>Control Panel</h1>
+        <h3>User Registered</h3>
+        <table class = "table">
+         <thead>
+                <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Modify</th>
+                </tr>
+         </thead>
+         <tbody>
+                <tr>
+                        {% for u in Users %}
+                        <td> {{u.id}} </td>
+                        <td> {{u.username}} </td>
+                        <td> {{u.email}} </td>
+                        <td> <button type = "button" class = "btn btn-danger">Delete</button></td>
+                         {%endfor%}
+                </tr>
+        </tbody>
+        </table>
+{% endblock %}
