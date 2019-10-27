@@ -49,7 +49,7 @@ def register():
         return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(id=form.username.data, email=form.email.data,\
+        user = User(username=form.username.data, email=form.email.data,\
                     password = form.password.data)
         database.session.add(user)
         database.session.commit()
