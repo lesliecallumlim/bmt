@@ -44,9 +44,8 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not form.password.data == user.password:
-            flash(f'Invalid username or password!', 'danger')
+            flash('Invalid username or password!', 'danger')
             return redirect(url_for('login'))
-            # flash(f'Login requested for {form.username.data}')
         login_user(user)
         return redirect(url_for('index'))
     return render_template('login.html', title='Sign In', form=form)
