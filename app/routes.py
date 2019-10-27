@@ -22,8 +22,18 @@ def deletetour(id):
     if tour.user_id == current_user.id or current_user.access == 'admin':
         database.session.delete(tour)
         database.session.commit()
-        flash('Deleted')
+        flash('Deleted', 'warning')
     return redirect(url_for('index'))
+
+@app.route('/deleteuser/<int:id>', methods=['GET', 'POST'])
+def deleteuser(id):
+    user = User.query.get(id)
+    if current_user.access == 'admin':
+        database.session.delete(user)
+        database.session.commit()
+        flash('Deleted', 'warning')
+    return redirect(url_for('index'))
+
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -34,7 +44,7 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not form.password.data == user.password:
-            flash(f'Invalid username or password!')
+            flash(f'Invalid username or password!', 'danger')
             return redirect(url_for('login'))
             # flash(f'Login requested for {form.username.data}')
         login_user(user)
@@ -63,7 +73,7 @@ def register():
                     password = form.password.data)
         database.session.add(user)
         database.session.commit()
-        flash('Congratulations, you are now a registered user!')
+        flash('Congratulations, you are now registered!', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
@@ -78,6 +88,6 @@ def create():
                          end_date = form.end_date.data)
         database.session.add(tour_data)
         database.session.commit()
-        flash('Congratulations, you have added a tour')
+        flash('Congratulations, you have added a tour.', 'success')
         return redirect(url_for('create'))
     return render_template('create.html', title='Create Tour', form=form)

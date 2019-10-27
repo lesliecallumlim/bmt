@@ -17,8 +17,10 @@
                         <td>{{u.id}}</td>
                         <td>{{u.username}}</td>
                         <td>{{u.email}}</td>
-                        <td><button type = "button" class = "btn-danger btn btn-primary btn-sm">Delete</button></td>     
-                        </tr> 
+                        
+                        <form action="" method="post">
+                        <td><a href="{{ url_for('deleteuser', id=u.id) }}"><button class = "btn btn-secondary btn-sm btn-danger">{{ ('Delete') }}</a></button></td>
+                        </form></tr> 
                         {% endfor %}
         </tbody>
         </table>
