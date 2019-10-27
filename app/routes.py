@@ -1,6 +1,6 @@
 from flask import render_template, url_for, flash, redirect
-from app.forms import LoginForm, RegistrationForm
-from app.models import User
+from app.forms import LoginForm, RegistrationForm, CreateTour
+from app.models import User, Tour
 from flask_login import current_user, login_user, logout_user, login_required
 from app import app, database
 
@@ -11,7 +11,9 @@ def index():
         user = current_user.username
     else:
         user = 'stranger'
-    return render_template('index.html', title = 'Home', user = user)
+
+    tour = Tour.query.all()
+    return render_template('index.html', title = 'Home', user = user, tours = tour)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -47,10 +49,25 @@ def register():
         return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data,\
+        user = User(id=form.username.data, email=form.email.data,\
                     password = form.password.data)
         database.session.add(user)
         database.session.commit()
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
+
+@app.route('/create', methods=['GET', 'POST'])
+@login_required
+def create():
+    form = CreateTour()
+    if form.validate_on_submit():
+        tour_data = Tour(user_id = current_user.get_id(), tour_name=form.tour_name.data,\
+                         tour_description = form.tour_description.data, tour_location = form.tour_location.data,\
+                         tour_price = form.tour_price.data, start_date = form.start_date.data, \
+                         end_date = form.end_date.data)
+        database.session.add(tour_data)
+        database.session.commit()
+        flash('Congratulations, you have added a tour')
+        return redirect(url_for('create'))
+    return render_template('create.html', title='Create Tour', form=form)

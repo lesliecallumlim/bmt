@@ -1,5 +1,36 @@
 {% extends "base.html" %}
 {% block app_content %}
-        <h1>Hi there, {{ user }}!
-        </h1>
+        <h1>Hi there, {{ user }}! </h1>
+
+        <h3 class = "text-center">List of upcoming tours</h3>
+        <table class = "table table-striped table-hover table-bordered">
+         <thead>
+                <tr>
+                        <th>ID</th>
+                        <th>Tour Name</th>
+                        <th>Description</th>
+                        <th>Location</th>
+                        <th>Price</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Ratings</th>
+                        <th>Join Tour</th>
+                </tr>
+         </thead>
+         <tbody>
+                        {% for tour in tours %}
+                        <tr>
+                            <td>{{tour.id}}</td>
+                            <td>{{tour.tour_name}}</td>
+                            <td>{{tour.tour_description}}</td>
+                            <td>{{tour.tour_location}}</td>
+                            <td>{{tour.tour_price}}</td>
+                            <td>{{tour.start_date}}</td>
+                            <td>{{tour.end_date}}</td>
+                            <td>{{tour.ratings}}</td>
+                            <td><button class = "btn btn-secondary btn-sm btn-success">Join</button></td>
+                        </tr> 
+                        {% endfor %}
+        </tbody>
+        </table>
 {% endblock %}

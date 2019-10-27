@@ -1,11 +1,16 @@
 table {
     margin: auto;
-    width: 50% !important; 
+    width: 80% !important; 
  }
 
 tbody, th
 {
    text-align: center !important; 
+   overflow: hidden;
+   white-space: nowrap;
+}
+td
+{
 }
  body 
  {

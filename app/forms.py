@@ -1,7 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, TextAreaField, FloatField
+from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Optional
+from wtforms.fields.html5 import DateField
 from app.models import User
+from datetime import date
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -25,3 +27,19 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Please use a different email address.')
+
+class CreateTour(FlaskForm):
+    tour_name = StringField('Tour Name', validators=[DataRequired()])
+    tour_description = TextAreaField('Description', validators=[DataRequired()])
+    tour_location = StringField('Location', validators=[DataRequired()])
+    tour_price = FloatField('Price', validators=[Optional()])
+    start_date = DateField('Start Date', format='%Y-%m-%d')
+    end_date = DateField('End Date', format='%Y-%m-%d')
+    submit = SubmitField('Publish')
+    
+    def validate(self):
+        result = super(CreateTour, self).validate()
+        if (self.start_date.data > self.end_date.data):
+            return False
+        else:
+            return result
