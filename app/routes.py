@@ -38,4 +38,5 @@ def logout():
 @app.route('/admin')
 @login_required
 def admin():
-    return render_template('admin.html', title = 'Control Panel', users = User)
+    user = User.query.all()
+    return render_template('admin.html', title = 'Control Panel', user = user)

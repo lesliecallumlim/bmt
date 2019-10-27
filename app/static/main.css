@@ -1,0 +1,16 @@
+table {
+    margin: auto;
+    width: 50% !important; 
+ }
+
+tbody, th
+{
+   text-align: center !important; 
+}
+ body 
+ {
+    font: 18px Raleway, sans-serif !important;
+ }
+ 
+
+ 
