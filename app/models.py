@@ -10,8 +10,8 @@ class User(UserMixin, database.Model):
     tours = database.relationship('Tour', backref='author', lazy='dynamic')
     access = database.Column(database.String(10), default = '')
 
-    def __repr__(self):
-        return f'<User { self.username }>'
+    # def __repr__(self):
+    #     return f'<User { self.username }>'
 
 
 class Tour(database.Model):
@@ -27,8 +27,8 @@ class Tour(database.Model):
     ratings  = database.Column(database.Float)
 
 
-    def __repr__(self):
-        return f'<Post {self.tour_desc}'
+    # def __repr__(self):
+    #     return f'<Post {self.tour_desc}'
 
 
 
