@@ -16,6 +16,16 @@ def index():
     return render_template('index.html', title = 'Home', user = user, tours = tour)
 
 
+@app.route('/deletetour/<int:id>', methods=['GET', 'POST'])
+def deletetour(id):
+    tour = Tour.query.get(id)
+    if tour.user_id == current_user.id or current_user.access == 'admin':
+        database.session.delete(tour)
+        database.session.commit()
+        flash('Deleted')
+    return redirect(url_for('index'))
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:

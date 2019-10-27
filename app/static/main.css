@@ -15,5 +15,6 @@ body
    font: 18px Raleway, sans-serif !important;
 }
 
+a, a:hover, a:active, a:visited { color: white; }
 
  

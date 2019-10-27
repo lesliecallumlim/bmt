@@ -25,8 +25,11 @@ class Tour(database.Model):
     timestamp = database.Column(database.DateTime, index=True, default=datetime.now)
     user_id = database.Column(database.Integer, database.ForeignKey('user.id'))
     ratings  = database.Column(database.Float)
+
+
     def __repr__(self):
         return f'<Post {self.tour_desc}'
+
 
 
 @login.user_loader
