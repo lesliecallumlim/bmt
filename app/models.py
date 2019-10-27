@@ -8,7 +8,7 @@ class User(UserMixin, database.Model):
     email = database.Column(database.String(50), index=True, unique=True)
     password = database.Column(database.String(128))
     tours = database.relationship('Tour', backref='author', lazy='dynamic')
-    access = database.Column(database.String(10))
+    access = database.Column(database.String(10), default = '')
 
     def __repr__(self):
         return f'<User { self.username }>'

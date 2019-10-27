@@ -1,6 +1,6 @@
 table {
     margin: auto;
-    width: 80% !important; 
+    width: 50% !important; 
  }
 
 tbody, th
@@ -9,13 +9,11 @@ tbody, th
    overflow: hidden;
    white-space: nowrap;
 }
-td
+
+body 
 {
+   font: 18px Raleway, sans-serif !important;
 }
- body 
- {
-    font: 18px Raleway, sans-serif !important;
- }
- 
+
 
  

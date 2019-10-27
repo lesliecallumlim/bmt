@@ -36,7 +36,7 @@ class CreateTour(FlaskForm):
     start_date = DateField('Start Date', format='%Y-%m-%d')
     end_date = DateField('End Date', format='%Y-%m-%d')
     submit = SubmitField('Publish')
-    
+
     def validate(self):
         result = super(CreateTour, self).validate()
         if (self.start_date.data > self.end_date.data):

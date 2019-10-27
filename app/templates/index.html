@@ -28,7 +28,11 @@
                             <td>{{tour.start_date}}</td>
                             <td>{{tour.end_date}}</td>
                             <td>{{tour.ratings}}</td>
+                            {% if current_user.id == tour.user_id %}
+                            <td><button class = "btn btn-secondary btn-sm btn-danger">Edit</button></td>
+                            {% else %}
                             <td><button class = "btn btn-secondary btn-sm btn-success">Join</button></td>
+                            {%endif %}
                         </tr> 
                         {% endfor %}
         </tbody>
