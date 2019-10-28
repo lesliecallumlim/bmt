@@ -20,25 +20,6 @@ class User(UserMixin, database.Model):
     tours = database.relationship('Tour', backref='author', lazy='dynamic')
     access = database.Column(database.String(10), default = '')
 
-    # TourParticipant()
-
-    # TourParticipated = database.relationship(
-    #     'User', secondary = TourParticipant,
-    #     primaryjoin = (TourParticipant.user_id == id),
-    #     secondaryjoin = (TourParticipant.user_id == id),
-    #     backref = database.backref('TourParticipant', lazy = 'dynamic'), lazy = 'dynamic')
-    
-    # def tour_followed(self):
-    #     tours = Tour.query.join(
-    #         TourParticipated, (TourParticipated.user_id == Tour.user_id)
-    #         )
-    #     own_tours = Tour.query.filter_by(user_id=self.id)
-    #     return tours.union(own_tours)
-        
-
-    # def __repr__(self):
-    #     return f'<User { self.username }>'
-
 
 class Tour(database.Model):
     id = database.Column(database.Integer, primary_key=True)

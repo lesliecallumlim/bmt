@@ -32,7 +32,7 @@
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         {% if not current_user.is_anonymous %}
-                        <li><a href="{{ url_for('joinedtours') }}">Your Tours</a></li>
+                        <li><a href="{{ url_for('joinedtours') }}">Your Tour</a></li>
                         {% endif %}
                         {% if current_user.access == 'admin' %}
                         <li><a href="{{ url_for('admin') }}">Control Panel</a></li>

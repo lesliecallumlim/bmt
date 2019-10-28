@@ -1,4 +1,4 @@
-from flask import render_template, url_for, flash, redirect
+from flask import render_template, url_for, flash, redirect, request
 from app.forms import LoginForm, RegistrationForm, CreateTour
 from app.models import User, Tour, TourParticipant
 from flask_login import current_user, login_user, logout_user, login_required
@@ -19,7 +19,8 @@ def index():
 @app.route('/joinedtours')
 def joinedtours():
     tourparted = Tour.query.join(TourParticipant, (TourParticipant.tour_id == Tour.id)).filter(TourParticipant.user_id == current_user.id)
-    return render_template('joinedtour.html', title = 'Joined Tours',  tourpart = tourparted)
+    tourcreated = Tour.query.filter(Tour.user_id == current_user.id)
+    return render_template('joinedtour.html', title = 'Joined Tours',  tourcreated = tourcreated, tourpart = tourparted)
 
 @app.route('/deletetour/<int:id>', methods=['GET', 'POST'])
 def deletetour(id):
@@ -130,3 +131,34 @@ def create():
         flash('Congratulations, you have added a tour.', 'success')
         return redirect(url_for('create'))
     return render_template('create.html', title='Create Tour', form=form)
+
+@app.route('/edittour/<int:id>', methods=['GET', 'POST'])
+def edittour(id):
+    if not current_user.is_authenticated:
+        flash('You need to login first!', 'warning')
+        return redirect(url_for('login'))
+        
+    tour = Tour.query.get(id)
+    form = CreateTour()
+
+    if form.validate_on_submit():
+        tour.user_id = current_user.get_id()
+        tour.tour_name=form.tour_name.data
+        tour.tour_description = form.tour_description.data 
+        tour.tour_location = form.tour_location.data
+        tour.tour_price = form.tour_price.data
+        tour.start_date = form.start_date.data
+        tour.end_date = form.end_date.data
+        database.session.commit()
+        flash('Edited successfully.', 'success')
+
+    elif request.method == 'GET':
+        form.tour_name.data = tour.tour_name
+        form.tour_description.data = tour.tour_description
+        form.tour_location.data = tour.tour_location
+        form.tour_price.data = tour.tour_price
+        form.start_date.data = tour.start_date
+        form.end_date.data = tour.end_date
+    return render_template('edittour.html', id = id, form = form)
+
+
