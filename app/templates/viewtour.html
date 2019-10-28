@@ -32,7 +32,7 @@
                         </form>
                         {% else %}
                         <form action="" method="post">
-                            <td><a href="{{ url_for('jointour', id=tour.id) }}"><button type = "submit" class = "btn btn-secondary btn-sm btn-danger">{{ ('Join') }}</a></button></td>
+                            <td><a href="{{ url_for('jointour', id=tour.id) }}"><button type = "submit" class = "btn btn-secondary btn-sm btn-success">{{ ('Join') }}</a></button></td>
                         </form>
                         {%endif %}
                         {% if current_user.id == tour.user_id or current_user.access == 'admin' %}

@@ -40,6 +40,7 @@ def viewtour(id):
         tour_participation = TourParticipant.query.filter_by(tour_id=id).first()
     else:
         flash('You need to login or register first!', 'warning')
+        return redirect(url_for('login'))
     return render_template('viewtour.html', title = 'View Tour', tour = tour, tour_participation = tour_participation)
 
 @app.route('/jointour/<int:id>', methods = ['GET', 'POST'])
@@ -47,8 +48,9 @@ def jointour(id):
     tour = Tour.query.get(id)
     if not current_user.is_authenticated:
         flash('You need to login first!', 'warning')
+        return redirect(url_for('login'))
     elif current_user.id == tour.user_id:
-        flash('You can''t join your own tour!')
+        flash('You cannot join your own tour!', 'warning')
     else:
         join = TourParticipant(user_id = current_user.id, tour_id = id)
         database.session.add(join)
@@ -107,8 +109,10 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 @app.route('/create', methods=['GET', 'POST'])
-@login_required
 def create():
+    if not current_user.is_authenticated:
+        flash('You need to login first!', 'warning')
+        return redirect(url_for('login'))
     form = CreateTour()
     if form.validate_on_submit():
         tour_data = Tour(user_id = current_user.get_id(), tour_name=form.tour_name.data,\
