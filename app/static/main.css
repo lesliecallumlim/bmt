@@ -1,12 +1,14 @@
 table {
-    margin: auto;
-    width: 100% !important; 
+    /* margin: auto; */
+    /* width: 100% !important;  */
+      align-content: center !important;
+      text-align: center !important;
  }
 
 tbody, th
 {
    text-align: center !important; 
-   overflow: hidden;
+   /* overflow: hidden; */
 }
 
 body 

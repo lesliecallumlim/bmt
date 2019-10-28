@@ -1,6 +1,6 @@
 from flask import render_template, url_for, flash, redirect
 from app.forms import LoginForm, RegistrationForm, CreateTour
-from app.models import User, Tour
+from app.models import User, Tour, TourParticipant
 from flask_login import current_user, login_user, logout_user, login_required
 from app import app, database
 
@@ -34,6 +34,34 @@ def deleteuser(id):
         flash('Deleted', 'warning')
     return redirect(url_for('index'))
 
+@app.route('/viewtour/<int:id>', methods=['GET', 'POST'])
+def viewtour(id):
+    tour = Tour.query.get(id)   
+    tour_participation = TourParticipant.query.filter_by(tour_id=id).first()
+    return render_template('viewtour.html', title = 'View Tour', tour = tour, tour_participation = tour_participation)
+
+@app.route('/jointour/<int:id>', methods = ['GET', 'POST'])
+def jointour(id):
+    tour = Tour.query.get(id)
+    if not current_user.is_authenticated:
+        flash('You need to login first!', 'warning')
+    elif current_user.id == tour.user_id:
+        flash('You can''t join your own tour!')
+    else:
+        join = TourParticipant(user_id = current_user.id, tour_id = id)
+        database.session.add(join)
+        database.session.commit()
+        flash('You joined the tour' , 'success')
+    return redirect(url_for('viewtour', id = id))
+
+
+@app.route('/leavetour/<int:id><int:user_id>', methods = ['GET', 'POST'])
+def leavetour(id, user_id):
+    tour = TourParticipant.query.filter_by(tour_id = id, user_id = user_id).first()
+    database.session.delete(tour)
+    database.session.commit()
+    flash('Deleted', 'warning')
+    return redirect(url_for('viewtour', id = id, user_id = user_id))
 
 
 @app.route('/login', methods=['GET', 'POST'])

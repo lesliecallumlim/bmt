@@ -3,7 +3,7 @@
         <h1>Hi there, {{ user }}! </h1>
 
         <h3 class = "text-center">List of upcoming tours</h3>
-        <table class = "table table-striped table-hover table-bordered">
+        <table class = "table table-striped table-hover table-bordered table-responsive align-middle">
          <thead>
                 <tr>
                         <th>ID</th>
@@ -28,13 +28,14 @@
                             <td>{{tour.start_date}}</td>
                             <td>{{tour.end_date}}</td>
                             <td>{{tour.ratings}}</td>
-                            <form action="" method="post">
+                            <td>
+                                <form action="" method="post">
+                                <a href="{{ url_for('viewtour', id=tour.id) }}"><button class = "btn btn-secondary btn-sm btn-success">{{ ('View') }}</a></button>
                                 {% if current_user.id == tour.user_id or current_user.access == 'admin' %}
-                                <td><a href="{{ url_for('deletetour', id=tour.id) }}"><button class = "btn btn-secondary btn-sm btn-danger">{{ ('Delete') }}</a></button></td>
-                            </form>
-                            {% else %}
-                            <td><button class = "btn btn-secondary btn-sm btn-success">Join</button></td>
-                            {%endif %}
+                                    <hr><a href="{{ url_for('deletetour', id=tour.id) }}"><button class = "btn btn-secondary btn-sm btn-danger">{{ ('Delete') }}</a></button>
+                                {% endif %}
+                                </form>
+                            </td>
                         </tr> 
                         {% endfor %}
         </tbody>
