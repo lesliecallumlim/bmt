@@ -13,7 +13,9 @@
                         <th>End Date</th>
                         <th>Ratings</th>
                         <th>Join</th>
+                        {% if current_user.id == tour.user_id or current_user.access == 'admin' %}
                         <th>Modify</th>
+                        {% endif %}
                 </tr>
          </thead>
          <tbody>
