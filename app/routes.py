@@ -11,7 +11,6 @@ def index():
         user = current_user.username
     else:
         user = 'stranger'
-
     tour = Tour.query.all()
     return render_template('index.html', title = 'Home', user = user, tours = tour)
 
@@ -31,13 +30,16 @@ def deleteuser(id):
     if current_user.access == 'admin':
         database.session.delete(user)
         database.session.commit()
-        flash('Deleted', 'warning')
+        flash('Deleted.', 'warning')
     return redirect(url_for('index'))
 
 @app.route('/viewtour/<int:id>', methods=['GET', 'POST'])
 def viewtour(id):
-    tour = Tour.query.get(id)   
-    tour_participation = TourParticipant.query.filter_by(tour_id=id).first()
+    if current_user.is_authenticated:
+        tour = Tour.query.get(id)   
+        tour_participation = TourParticipant.query.filter_by(tour_id=id).first()
+    else:
+        flash('You need to login or register first!', 'warning')
     return render_template('viewtour.html', title = 'View Tour', tour = tour, tour_participation = tour_participation)
 
 @app.route('/jointour/<int:id>', methods = ['GET', 'POST'])
