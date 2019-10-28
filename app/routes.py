@@ -11,9 +11,15 @@ def index():
         user = current_user.username
     else:
         user = 'stranger'
-    tour = Tour.query.all()
+        tourparted = ''
+    tour = Tour.query.all() 
+
     return render_template('index.html', title = 'Home', user = user, tours = tour)
 
+@app.route('/joinedtours')
+def joinedtours():
+    tourparted = Tour.query.join(TourParticipant, (TourParticipant.tour_id == Tour.id)).filter(TourParticipant.user_id == current_user.id)
+    return render_template('joinedtour.html', title = 'Joined Tours',  tourpart = tourparted)
 
 @app.route('/deletetour/<int:id>', methods=['GET', 'POST'])
 def deletetour(id):
