@@ -3,12 +3,12 @@
         <h1>Hi there, {{ user }}! </h1>
 
         <h3 class = "text-center">List of upcoming tours</h3>
+        <div class = "table-responsive">
         <table class = "table table-striped table-hover table-bordered table-responsive align-middle">
          <thead>
                 <tr>
                         <th>ID</th>
                         <th>Tour Name</th>
-                        <th>Description</th>
                         <th>Location</th>
                         <th>Price</th>
                         <th>Start Date</th>
@@ -22,7 +22,6 @@
                         <tr>
                             <td>{{tour.id}}</td>
                             <td>{{tour.tour_name}}</td>
-                            <td>{{tour.tour_description}}</td>
                             <td>{{tour.tour_location}}</td>
                             <td>{{tour.tour_price}}</td>
                             <td>{{tour.start_date}}</td>
@@ -40,4 +39,5 @@
                         {% endfor %}
         </tbody>
         </table>
+    </div>
 {% endblock %}
