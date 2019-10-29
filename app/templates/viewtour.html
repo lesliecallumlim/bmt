@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% block app_content %}
-<script src="{{url_for('static', filename='star.js')}}"></script>
         <h3>Tour: {{ tour.tour_name }}</h3>
         
         <div class = "table-responsive">
@@ -62,4 +61,6 @@
         </tbody>
         </table>
         </div>
+
+<script src="{{url_for('static', filename='star.js')}}"></script>
 {% endblock %}
