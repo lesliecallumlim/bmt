@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block app_content %}
+<script src="{{url_for('static', filename='star.js')}}"></script>
         <h3>Tour: {{ tour.tour_name }}</h3>
         
         <div class = "table-responsive">
@@ -26,7 +27,17 @@
                 </tr>
                 <tr>
                     <th>Ratings</th>
-                    <td>{{tour.ratings}}</td>
+                    <td>
+                        {{tour.ratings}}
+                        <div class="star-rating"> 
+                        <span class="fa fa-star-o" data-rating="1"></span>
+                        <span class="fa fa-star-o" data-rating="2"></span>
+                        <span class="fa fa-star-o" data-rating="3"></span>
+                        <span class="fa fa-star-o" data-rating="4"></span>
+                        <span class="fa fa-star-o" data-rating="5"></span>
+                        <input type="hidden" name="whatever" class="rating-value" value="3">
+                        </div>
+                    </td>
                 <tr>
                         <th>Join</th>
                         {% if current_user.id == tour_participation.user_id %}
