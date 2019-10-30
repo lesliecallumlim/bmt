@@ -38,7 +38,7 @@
                         <span class="fa fa-star-o" data-rating="3"></span>
                         <span class="fa fa-star-o" data-rating="4"></span>
                         <span class="fa fa-star-o" data-rating="5"></span>
-                        <input type="hidden" name="whatever" class="rating-value" value="3">
+                        <input type="hidden" name="whatever" class="rating-value" value="5">
                         </div>
                     </td>
                 <tr>
@@ -49,10 +49,10 @@
                         </form>
                         {% else %}
                         <form action="" method="post">
-                            <td><a href="{{ url_for('jointour', id=tour.id) }}"><button type = "submit" class = "btn btn-secondary btn-sm btn-success">{{ ('Join') }}</a></button></td>
+                            <td><a href="{{ url_for('jointour', id=current_user.id) }}"><button type = "submit" class = "btn btn-secondary btn-sm btn-success">{{ ('Join') }}</a></button></td>
                         </form>
                         {% endif %}
-                </tr>
+                </tr>   
                 <tr>
                         {% if current_user.id == tour.user_id or current_user.access == 'admin' %}
                         <th>Modify</th>
