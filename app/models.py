@@ -15,10 +15,13 @@ class TourParticipant(database.Model):
 class User(UserMixin, database.Model):
     id = database.Column(database.Integer, primary_key=True)
     username = database.Column(database.String(32), index=True, unique=True)
+    name = database.Column((database.String(64)))
     email = database.Column(database.String(50), index=True, unique=True)
     password = database.Column(database.String(128))
     tours = database.relationship('Tour', backref='author', lazy='dynamic')
     access = database.Column(database.String(10), default = '')
+    description = database.Column(database.String(128))
+    ratings  = database.Column(database.Float)
 
 
 class Tour(database.Model):

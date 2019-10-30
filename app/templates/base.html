@@ -34,6 +34,9 @@
                         {% if not current_user.is_anonymous %}
                         <li><a href="{{ url_for('joinedtours') }}">Your Tour</a></li>
                         {% endif %}
+                        {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('profile', id = current_user.id) }}">Your Profile</a></li>
+                        {% endif %}
                         {% if current_user.access == 'admin' %}
                         <li><a href="{{ url_for('admin') }}">Control Panel</a></li>
                         {% endif %}

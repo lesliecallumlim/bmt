@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block app_content %}
+        <h3>User: {{ user.username }}</h3>
+        
+        <div class = "table-responsive">
+        <table class = "table table-striped table-hover table-bordered table-responsive left">
+                <tr>
+                        <th>Username</th>
+                        <td>{{user.username}}</td>
+                </tr>
+                <tr>
+                        <th>Name</th>
+                        <td>{{user.name}}</td>
+                </tr>
+                <tr>
+                        <th>Email</th>
+                        <td>{{user.email}}</td>
+                </tr>
+                <tr>
+                        <th>Your Description</th>
+                        <td>{{user.description}}</td>
+                </tr>
+                <tr>
+                        <th>Ratings</th>
+                        <td>{{user.rating}}</td>
+                </tr>
+                <tr>
+                        {% if current_user.id == user.id %}
+                        <th>Edit your profile</th>
+                        <form action= "" method="post">
+                            <td><a href="{{ url_for('editprofile', id=user.id) }}"><button type = "submit" class = "btn btn-secondary btn-sm btn-danger">{{ ('Edit') }}</a></button></td>
+                        </form>
+                        {% endif %}
+                </tr>
+        </tbody>
+        </table>
+        </div>
+{% endblock %}

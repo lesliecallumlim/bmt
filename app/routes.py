@@ -1,5 +1,5 @@
 from flask import render_template, url_for, flash, redirect, request
-from app.forms import LoginForm, RegistrationForm, CreateTour
+from app.forms import LoginForm, RegistrationForm, CreateTour, EditProfile
 from app.models import User, Tour, TourParticipant
 from flask_login import current_user, login_user, logout_user, login_required
 from app import app, database
@@ -40,15 +40,56 @@ def deleteuser(id):
         flash('Deleted.', 'warning')
     return redirect(url_for('index'))
 
+@app.route('/profile/<int:id>', methods = ['GET', 'POST'])
+def profile(id):
+    if current_user.is_authenticated:
+        user = User.query.get(id)
+        return render_template('profile.html', id = current_user.id, user = user)
+    
+    else:
+        flash('You need to login or register first!', 'warning')
+        return redirect(url_for('login'))
+
+
+@app.route('/editprofile/<int:id>', methods = ['GET', 'POST'])
+def editprofile(id):
+    if not current_user.is_authenticated:
+        flash('You need to login first!', 'warning')
+        return redirect(url_for('login'))
+    
+    user = User.query.get(id)
+    form = EditProfile(curr_username = current_user.username, curr_email = current_user.email)
+
+    if form.validate_on_submit():
+        user.email = form.email.data
+        user.username = form.username.data
+        user.name = form.name.data
+        user.description = form.description.data
+        database.session.commit()
+        flash('Edited successfully.', 'success')
+
+    elif request.method == 'GET':
+        form.email.data = user.email
+        form.username.data = user.username
+        form.name.data = user.name
+        form.description.data = user.description
+
+    return render_template('editprofile.html', id = current_user.id, user = user, form = form)
+
+    #else:
+     #   flash('You need to login or register first!', 'warning')
+      #  return redirect(url_for('login'))
+
 @app.route('/viewtour/<int:id>', methods=['GET', 'POST'])
 def viewtour(id):
     if current_user.is_authenticated:
         tour = Tour.query.get(id)   
+        tour_owner = Tour.query.filter_by(user_id = current_user.id).first()
         tour_participation = TourParticipant.query.filter_by(tour_id=id).first()
     else:
         flash('You need to login or register first!', 'warning')
         return redirect(url_for('login'))
-    return render_template('viewtour.html', title = 'View Tour', tour = tour, tour_participation = tour_participation)
+    return render_template('viewtour.html', title = 'View Tour', tour_owner = tour_owner, tour = tour, tour_participation = tour_participation)
 
 @app.route('/jointour/<int:id>', methods = ['GET', 'POST'])
 def jointour(id):
@@ -107,8 +148,9 @@ def register():
         return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data,\
-                    password = form.password.data)
+        user = User(username = form.username.data, email = form.email.data,\
+                    password = form.password.data, name = form.name.data,\
+                    description = form.description.data)
         database.session.add(user)
         database.session.commit()
         flash('Congratulations, you are now registered!', 'success')
