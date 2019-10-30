@@ -1,22 +1,25 @@
 $(document).ready(function() 
 {
-    var $star_rating = $('.star-rating .fa');
+    var $star_rating = $('.star-rating');
 
-    var SetRatingStar = function() {
-    return $star_rating.each(function() {
-        if (parseInt($star_rating.siblings('input.rating-value').val()) >= parseInt($(this).data('rating'))) {
-        return $(this).removeClass('fa-star-o').addClass('fa-star');
-        } else {
-        return $(this).removeClass('fa-star').addClass('fa-star-o');
-        }
-    });
+    var SetRatingStar = function() {  
+      $star_rating.each(setStars);
     };
+    
+    
+    function setStars() {
+      var ratingVal = parseInt( $(this).find('input.rating-value').val());
+      $(this).children().removeClass('fa-star').addClass('fa-star-o');
+      for(var i = 0; i < ratingVal; i ++)
+       $(this).children().eq(i).removeClass('fa-star-o').addClass('fa-star');  
+    }
+    
+    $star_rating.on('click', '.fa', function() {  
+            $(this).siblings('input.rating-value').val($(this).index() + 1);
+            setStars.call($(this).parent());
+        });
+    
+    
+      SetRatingStar();
 
-    $star_rating.on('click', function() 
-    {
-        $(this).siblings('input.rating-value').val($(this).data('rating'));
-        return SetRatingStar();
-    });
-
-    SetRatingStar();
 });

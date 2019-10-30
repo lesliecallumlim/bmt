@@ -33,12 +33,11 @@
                                 <span class="fa fa-star-o" data-rating="3"></span>
                                 <span class="fa fa-star-o" data-rating="4"></span>
                                 <span class="fa fa-star-o" data-rating="5"></span>
-                                <input type="hidden" rating ="star" class="rating-value" value="{{ tour.ratings }}">
+                                <input type="hidden" name="rating-stars" class="rating-value" value="{{ tour.ratings }}">
                                 </div>
                             </td>
-                            <tr>
                             <td>
-                                <form action="" method="get">
+                                <form action= "submit" method="get">
                                 <a href="{{ url_for('viewtour', id=tour.id) }}"><button class = "btn btn-secondary btn-sm btn-success">{{ ('View') }}</a></button>
                                 {% if current_user.id == tour.user_id or current_user.access == 'admin' %}
                                     <hr><a href="{{ url_for('deletetour', id=tour.id) }}"><button class = "btn btn-secondary btn-sm btn-danger">{{ ('Delete') }}</a></button>
