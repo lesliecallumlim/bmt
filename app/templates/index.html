@@ -26,7 +26,17 @@
                             <td>{{tour.tour_price}}</td>
                             <td>{{tour.start_date}}</td>
                             <td>{{tour.end_date}}</td>
-                            <td>{{tour.ratings}}</td>
+                            <td>
+                                <div class="star-rating"> 
+                                <span class="fa fa-star-o" data-rating="1"></span>
+                                <span class="fa fa-star-o" data-rating="2"></span>
+                                <span class="fa fa-star-o" data-rating="3"></span>
+                                <span class="fa fa-star-o" data-rating="4"></span>
+                                <span class="fa fa-star-o" data-rating="5"></span>
+                                <input type="hidden" rating ="star" class="rating-value" value="{{ tour.ratings }}">
+                                </div>
+                            </td>
+                            <tr>
                             <td>
                                 <form action="" method="get">
                                 <a href="{{ url_for('viewtour', id=tour.id) }}"><button class = "btn btn-secondary btn-sm btn-success">{{ ('View') }}</a></button>

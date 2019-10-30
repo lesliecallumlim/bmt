@@ -12,9 +12,10 @@ $(document).ready(function()
     });
     };
 
-    $star_rating.on('click', function() {
-    $star_rating.siblings('input.rating-value').val($(this).data('rating'));
-    return SetRatingStar();
+    $star_rating.on('click', function() 
+    {
+        $(this).siblings('input.rating-value').val($(this).data('rating'));
+        return SetRatingStar();
     });
 
     SetRatingStar();
