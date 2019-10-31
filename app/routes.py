@@ -3,7 +3,7 @@ from app.forms import LoginForm, RegistrationForm, CreateTour, EditProfile
 from app.models import User, Tour, TourParticipant
 from flask_login import current_user, login_user, logout_user, login_required
 from app import app, database
-
+from sqlalchemy import func
 @app.route('/')
 @app.route('/index')
 def index():
@@ -11,8 +11,7 @@ def index():
         user = current_user.username
     else:
         user = 'stranger'
-        tourparted = ''
-    tour = Tour.query.all() 
+    tour = Tour.query.filter(Tour.f_status == None).all()
 
     return render_template('index.html', title = 'Home', user = user, tours = tour)
 
@@ -26,7 +25,7 @@ def joinedtours():
 def deletetour(id):
     tour = Tour.query.get(id)
     if tour.user_id == current_user.id or current_user.access == 'admin':
-        database.session.delete(tour)
+        tour.f_status = 1
         database.session.commit()
         flash('Deleted', 'warning')
     return redirect(url_for('index'))
@@ -35,7 +34,8 @@ def deletetour(id):
 def deleteuser(id):
     user = User.query.get(id)
     if current_user.access == 'admin':
-        database.session.delete(user)
+        # database.session.delete(user)
+        user.f_status = 1
         database.session.commit()
         flash('Deleted.', 'warning')
     return redirect(url_for('index'))
@@ -106,15 +106,25 @@ def jointour(id):
         flash('You joined the tour' , 'success')
     return redirect(url_for('viewtour', id = id))
 
-
-@app.route('/leavetour/<int:id><int:user_id>', methods = ['GET', 'POST'])
-def leavetour(id, user_id):
-    tour = TourParticipant.query.filter_by(tour_id = id, user_id = user_id).first()
-    database.session.delete(tour)
-    database.session.commit()
-    flash('Deleted', 'warning')
-    return redirect(url_for('viewtour', id = id, user_id = user_id))
-
+@app.route('/rate/<int:id>')
+@app.route('/rate/<int:id>/<int:rating>', methods = ['GET', 'POST'])
+def rate(id, rating):
+    tour_part = TourParticipant.query.filter(TourParticipant.tour_id == id, TourParticipant.user_id == current_user.id).first()
+    tour = Tour.query.filter(Tour.id == id).first()
+    prev_tour = TourParticipant.query.with_entities(func.sum(TourParticipant.tour_user_rating).label('prev_rating'))\
+        .filter(TourParticipant.tour_id == id).first()
+    tour_total_participant = TourParticipant.query.filter(TourParticipant.tour_id == id).count()
+    
+    if tour_part.tour_user_rating != rating:
+        if prev_tour.prev_rating is None:
+            tour_rating = rating/tour_total_participant
+        else:
+            tour_rating = (prev_tour.prev_rating+rating)/tour_total_participant
+            tour_part.tour_user_rating = rating
+        tour.ratings = tour_rating
+        database.session.commit()
+    flash('Successfully rated!')
+    return redirect(url_for('viewtour', id = id))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -135,11 +145,18 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+@app.route('/leavetour/<int:id><int:user_id>', methods = ['GET', 'POST'])
+def leavetour(id, user_id):
+    tour = TourParticipant.query.filter_by(tour_id = id, user_id = user_id).first()
+    database.session.delete(tour)
+    database.session.commit()
+    flash('Deleted', 'warning')
+    return redirect(url_for('viewtour', id = id, user_id = user_id))
 
 @app.route('/admin')
 @login_required
 def admin():
-    user = User.query.all()
+    user = User.query.filter(User.f_status == None).all()
     return render_template('admin.html', title = 'Control Panel', user = user)
 
 @app.route('/register', methods=['GET', 'POST'])

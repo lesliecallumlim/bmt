@@ -7,9 +7,8 @@ class TourParticipant(database.Model):
     id = database.Column(database.Integer, primary_key=True)
     user_id = database.Column(database.Integer, database.ForeignKey('user.id'))
     tour_id = database.Column(database.Integer, database.ForeignKey('tour.id'))
+    tour_user_rating = database.Column(database.Float)
 
-    # def __repr__(self):
-    #     return f'<Post {self.tour_desc}'
 
 
 class User(UserMixin, database.Model):
@@ -22,6 +21,7 @@ class User(UserMixin, database.Model):
     access = database.Column(database.String(10), default = '')
     description = database.Column(database.String(128))
     ratings  = database.Column(database.Float)
+    f_status = database.Column(database.Integer)
 
 
 class Tour(database.Model):
@@ -35,6 +35,7 @@ class Tour(database.Model):
     timestamp = database.Column(database.DateTime, index=True, default=datetime.now)
     user_id = database.Column(database.Integer, database.ForeignKey('user.id'))
     ratings  = database.Column(database.Float)
+    f_status = database.Column(database.Integer)
 
 
 @login.user_loader
