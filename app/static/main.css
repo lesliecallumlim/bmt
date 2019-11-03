@@ -1,23 +1,81 @@
-table {
-    /* margin: auto; */
+table 
+{
       width: 100% !important; 
       align-content: center !important;
-      text-align: center !important;
+      box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+      background: #F9F9F9;
  }
 
-tbody, th
-{
-   /* text-align: center;  */
-   /* overflow: hidden; */
-}
 
 body 
 {
    font: 18px Raleway, sans-serif !important;
 }
 
+.bg_image
+{
+   filter: blur(8px);
+  -webkit-filter: blur(8px);
+
+  /* Full height */
+  height: 100%;
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 a, a:hover, a:active, a:visited { color: white; }
 
 .alignleft { text-align: left !important; }
 
+form
+{
+   background: #F9F9F9;
+   padding: 25px;
+   margin: 150px 0;
+   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+ }
+
+.formcontainer
+{
+   max-width: 400px;
+   width: 100%;
+   margin: 0 auto;
+   display: inline-block;
+   position: relative;
+ }
+
+ fieldset 
+ {
+   border: medium none !important;
+   margin: 0 0 10px;
+   min-width: 100%;
+   padding: 0;
+   width: 100%;
+ }
+
+ .submit {
+   -webkit-transition-duration: 0.4s; /* Safari */
+   transition-duration: 0.4s;
+ }
  
+ .submit:hover {
+   background-color: #4CAF50; /* Green */
+   color: white;
+ }
+
+.simpleform 
+{
+   width: 100%;
+   border: 1px solid #ccc;
+   background: #FFF;
+   margin: 0 0 5px;
+   padding: 10px;
+ }
+
+ .btn.square
+ {
+    border-radius: 0;
+ }

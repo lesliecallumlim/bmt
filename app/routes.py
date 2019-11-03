@@ -1,5 +1,5 @@
 from flask import render_template, url_for, flash, redirect, request
-from app.forms import LoginForm, RegistrationForm, FeedbackForm, CreateTour
+from app.forms import LoginForm, RegistrationForm, FeedbackForm, CreateTour, EditProfile
 from app.models import User, Tour, TourParticipant
 from flask_login import current_user, login_user, logout_user, login_required
 from app import app, database
@@ -119,7 +119,7 @@ def jointour(id):
     elif current_user.id == tour.user_id:
         flash('You cannot join your own tour!', 'warning')
     else:
-        tour_participation = TourParticipant.query.filter(TourParticipant.tour_id == id and TourParticipation.user_id == current_user.id).first()
+        # tour_participation = TourParticipant.query.filter(TourParticipant.tour_id == id and TourParticipation.user_id == current_user.id).first()
     
         join = TourParticipant(user_id = current_user.id, tour_id = id)
         database.session.add(join)

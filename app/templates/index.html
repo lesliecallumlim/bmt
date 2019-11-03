@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% block app_content %}
-        <h1>Hi there, {{ user }}! </h1>
-
-        <h3>List of upcoming tours...</h3>
         <div class = "table-responsive">
-        <table class = "table table-striped table-hover table-bordered table-responsive align-middle">
-         <thead>
+        <table class = "table table-striped table-hover table-bordered">
+        <h1>Hi there, {{ user }}! </h1>
+        <h3>List of upcoming tours..</h3>
+        <br>
+        <thead>
                 <tr>
                         <th>ID</th>
                         <th>Tour Name</th>
@@ -36,23 +36,20 @@
                                 <input type="hidden" name="rating-stars" class="rating-value" value="{{ tour.ratings }}">
                                 </div>
                             </td>
-                            <td>
-                                <form action= "submit" method="get">
-                                <a href="{{ url_for('viewtour', id=tour.id) }}"><button class = "btn btn-secondary btn-sm btn-success">{{ ('View') }}</a></button>
+                            <td  style = "text-align: center">
+                                <a href="{{ url_for('viewtour', id=tour.id) }}"><button class = "btn btn-secondary square btn-sm btn-success">{{ ('View') }}</a></button>
                                 {% if current_user.id == tour.user_id or current_user.access == 'admin' %}
-                                    <hr><a href="{{ url_for('deletetour', id=tour.id) }}"><button class = "btn btn-secondary btn-sm btn-danger">{{ ('Delete') }}</a></button>
+                                    <hr><a href="{{ url_for('deletetour', id=tour.id) }}"><button class = "btn btn-secondary square btn-sm btn-danger">{{ ('Delete') }}</a></button>
                                 {% endif %}
-                                </form>
                             </td>
                         </tr> 
                         {% endfor %}
         </tbody>
         </table>
         {% if prev_url %}
-        <a href="{{ prev_url }}" style = "float: left; color: black">Back</a>
+        <a href="{{ prev_url }}"><button  style = "float: left; color: black" class = "btn square submit">{{ ('Back') }}</button></a>
         {% endif %}
         {% if next_url %}
-        <a href="{{ next_url }}" style = "float: right; color: black">Next</a>
+        <a href="{{ next_url }}"><button style = "float: right; color: black" class = "btn square submit">{{ ('Next') }}</button></a>
         {% endif %}
-    </div>
 {% endblock %}

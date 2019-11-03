@@ -45,6 +45,27 @@ class CreateTour(FlaskForm):
             return False
         else:
             return result
+class EditProfile(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    name = StringField('Name', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    description = TextAreaField('Description')
+    submit = SubmitField('Submit')
+
+    def __init__(self, curr_username, curr_email, *args, **kwargs):
+        super(EditProfile, self).__init__(*args, **kwargs)
+        self.curr_username = curr_username
+        self.curr_email = curr_email
+
+    def validate_username(self, username):
+        user = User.query.filter_by(username=self.username.data).first()
+        if user is not None and username.data != self.curr_username:
+            raise ValidationError('Please use a different username.')  
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user is not None and email.data != self.curr_email:
+            raise ValidationError('Please use a different email.')   
 
 class FeedbackForm(FlaskForm):
     tour_feedback = TextAreaField('What do you think?',validators=[DataRequired()])

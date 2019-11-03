@@ -1,26 +1,23 @@
 {% extends 'base.html' %}
-{% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-    <h1>Sign In</h1>
-    <form action="" method="post" novalidate>
+    <br>
+    <form class = "formcontainer" action="" method="post" novalidate>
+        <h3 class = "form_class">Sign in.</h3>
         {{ form.hidden_tag() }}
-        <p>
-            {{ form.username.label }}<br>
-            {{ form.username(size=32) }}<br>
+        <fieldset>
+            {{ form.username(class_ = "simpleform", placeholder = "Username.")}}
             {% for error in form.username.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-        </p>
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password(size=32) }}<br>
+        </fieldset>
+        <fieldset>
+            {{ form.password(class_ = "simpleform", placeholder = "Your password")}}<br>
             {% for error in form.password.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-        </p>
-        <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
-        <p>{{ form.submit() }}</p>
+        </fieldset>
+        <fieldset>{{ form.submit(class_ = "simpleform submit") }}</fieldset>
+    <fieldset>New User? <a style = "color:black;" href="{{ url_for('register') }}">Register here!</a></fieldset>
     </form>
-    <p>New User? <a style = "color:black;" href="{{ url_for('register') }}">Register here!</a></p>
 {% endblock %}
