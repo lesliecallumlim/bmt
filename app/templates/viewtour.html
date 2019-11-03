@@ -47,6 +47,7 @@
                         </form>
                         </div>
                     </td>
+                </tr>
                 <tr>
                         <th>Join</th>
                         {% if current_user.id == tour_participation.user_id %}
@@ -68,6 +69,54 @@
                         </form>
                         {% endif %}
                 </tr>
+        </tbody>
+        </table>
+        <br>
+
+        {% if current_user.id == tour_participation.user_id %}
+        <tr>
+                        <form action="" method="post">
+                                {{ form.hidden_tag() }}
+                                <p>
+                                    {{ form.tour_feedback.label }}<br>
+                                    {{ form.tour_feedback(cols = "50", rows = "5") }}<br>
+                                    {% for error in form.tour_feedback.errors %}
+                                    <span style="color: red;">[{{ error }}]</span>
+                                    {% endfor %}
+                                </p>
+                                <p>{{ form.submit() }}</p>
+                        </form>
+
+        </tr>
+        {% endif %}
+        <h3>What other people say.</h3>
+        <table class = "table table-striped table-hover table-bordered table-responsive left">
+                <tr>
+                        <th>User ID</th>
+                        <th>Feedback</th>
+                        <th>Rating</th>
+                </tr>
+                {% for user_feedback in user_feedbacks %}
+                        {% if user_feedback.user_id is not none %}
+                        <tr>
+                                <td>{{user_feedback.user_id}}</td>
+                                <td>{{user_feedback.tour_user_feedback}}</td>
+                                <td>                        
+                                        <div class="star-rating main" data-toggle = "tooltip" data-placement="right" title = "{{ user_feedback.tour_user_rating }}  stars" > 
+                                        <span class="fa fa-star-o" data-rating="1"></span>
+                                        <span class="fa fa-star-o" data-rating="2"></span>
+                                        <span class="fa fa-star-o" data-rating="3"></span>
+                                        <span class="fa fa-star-o" data-rating="4"></span>
+                                        <span class="fa fa-star-o" data-rating="5"></span>
+                                        <input type="hidden" name="rating-stars" class="rating-value" value="{{ user_feedback.tour_user_rating }}">
+                               </div>
+                                </td>
+                        </tr>
+                        {% else %}
+                        <tr><td>No feedback yet!</td></tr>
+                {% endif %}
+                        
+                {% endfor %}
         </tbody>
         </table>
         </div>

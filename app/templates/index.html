@@ -48,5 +48,11 @@
                         {% endfor %}
         </tbody>
         </table>
+        {% if prev_url %}
+        <a href="{{ prev_url }}" style = "float: left; color: black">Back</a>
+        {% endif %}
+        {% if next_url %}
+        <a href="{{ next_url }}" style = "float: right; color: black">Next</a>
+        {% endif %}
     </div>
 {% endblock %}

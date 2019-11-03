@@ -8,7 +8,7 @@ class TourParticipant(database.Model):
     user_id = database.Column(database.Integer, database.ForeignKey('user.id'))
     tour_id = database.Column(database.Integer, database.ForeignKey('tour.id'))
     tour_user_rating = database.Column(database.Float)
-
+    tour_user_feedback = database.Column(database.String(128))
 
 
 class User(UserMixin, database.Model):

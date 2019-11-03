@@ -1,9 +1,10 @@
 from flask import render_template, url_for, flash, redirect, request
-from app.forms import LoginForm, RegistrationForm, CreateTour, EditProfile
+from app.forms import LoginForm, RegistrationForm, FeedbackForm, CreateTour
 from app.models import User, Tour, TourParticipant
 from flask_login import current_user, login_user, logout_user, login_required
 from app import app, database
-from sqlalchemy import func
+from sqlalchemy import func, and_
+
 @app.route('/')
 @app.route('/index')
 def index():
@@ -11,9 +12,13 @@ def index():
         user = current_user.username
     else:
         user = 'stranger'
-    tour = Tour.query.filter(Tour.f_status == None).all()
-
-    return render_template('index.html', title = 'Home', user = user, tours = tour)
+    page = request.args.get('page', 1, type=int) 
+    tour = Tour.query.filter(Tour.f_status == None).paginate(page, app.config['POSTS_PER_PAGE'], False)
+    next_url = url_for('index', page=tour.next_num) \
+        if tour.has_next else None
+    prev_url = url_for('index', page=tour.prev_num) \
+        if tour.has_prev else None
+    return render_template('index.html', title = 'Home', user = user, tours = tour.items, next_url = next_url, prev_url = prev_url)
 
 @app.route('/joinedtours')
 def joinedtours():
@@ -85,11 +90,25 @@ def viewtour(id):
     if current_user.is_authenticated:
         tour = Tour.query.get(id)   
         tour_owner = Tour.query.filter_by(user_id = current_user.id).first()
-        tour_participation = TourParticipant.query.filter_by(tour_id=id).first()
+        tour_participation = TourParticipant.query.filter(and_(TourParticipant.tour_id == id, TourParticipant.user_id == current_user.id)).first()
+        participant = TourParticipant.query.filter(and_(TourParticipant.tour_id == id, TourParticipant.tour_user_feedback.isnot(None))).all()
+    
+        form = FeedbackForm()
+
+        if form.validate_on_submit():
+            tour_participation.tour_user_feedback = form.tour_feedback.data
+            database.session.commit()
+            flash('Thank you for your feedback.', 'success')
+
+        elif request.method == 'GET' and tour_participation is not None:
+            form.tour_feedback.data = tour_participation.tour_user_feedback
+    
     else:
         flash('You need to login or register first!', 'warning')
         return redirect(url_for('login'))
-    return render_template('viewtour.html', title = 'View Tour', tour_owner = tour_owner, tour = tour, tour_participation = tour_participation)
+
+    
+    return render_template('viewtour.html', title = 'View Tour', tour_owner = tour_owner, form = form, tour = tour, tour_participation = tour_participation, user_feedbacks = participant)
 
 @app.route('/jointour/<int:id>', methods = ['GET', 'POST'])
 def jointour(id):
@@ -100,6 +119,8 @@ def jointour(id):
     elif current_user.id == tour.user_id:
         flash('You cannot join your own tour!', 'warning')
     else:
+        tour_participation = TourParticipant.query.filter(TourParticipant.tour_id == id and TourParticipation.user_id == current_user.id).first()
+    
         join = TourParticipant(user_id = current_user.id, tour_id = id)
         database.session.add(join)
         database.session.commit()
@@ -109,21 +130,22 @@ def jointour(id):
 @app.route('/rate/<int:id>')
 @app.route('/rate/<int:id>/<int:rating>', methods = ['GET', 'POST'])
 def rate(id, rating):
-    tour_part = TourParticipant.query.filter(TourParticipant.tour_id == id, TourParticipant.user_id == current_user.id).first()
+    tour_part = TourParticipant.query.filter(and_(TourParticipant.tour_id == id, TourParticipant.user_id == current_user.id)).first()
     tour = Tour.query.filter(Tour.id == id).first()
     prev_tour = TourParticipant.query.with_entities(func.sum(TourParticipant.tour_user_rating).label('prev_rating'))\
         .filter(TourParticipant.tour_id == id).first()
     tour_total_participant = TourParticipant.query.filter(TourParticipant.tour_id == id).count()
-    
+    rating = float(rating)
     if tour_part.tour_user_rating != rating:
         if prev_tour.prev_rating is None:
             tour_rating = rating/tour_total_participant
         else:
-            tour_rating = (prev_tour.prev_rating+rating)/tour_total_participant
-            tour_part.tour_user_rating = rating
+            tour_rating = float((prev_tour.prev_rating+rating)/tour_total_participant)
+        tour_part.tour_user_rating = rating
+        database.session.commit()
         tour.ratings = tour_rating
         database.session.commit()
-    flash('Successfully rated!')
+    flash('Successfully rated!', 'success')
     return redirect(url_for('viewtour', id = id))
 
 @app.route('/login', methods=['GET', 'POST'])
