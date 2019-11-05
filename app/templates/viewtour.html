@@ -39,7 +39,7 @@
                         <span class="fa fa-star-o" data-rating="4"></span>
                         <span class="fa fa-star-o" data-rating="5"></span>
                         
-                        {% if current_user.id == tour_participation.user_id %}
+                        {% if tour_participation %}
                         <input type="hidden" id = "rating_system" text = "{{ url_for('rate', id=tour.id) }}" class="rating-value" value="{{ tour.ratings }}">
                         {% else %}
                         <input type="hidden" class="rating-value main" value= "{{ tour.ratings }}">
@@ -50,7 +50,7 @@
                 </tr>
                 <tr>
                         <th>Join</th>
-                        {% if current_user.id == tour_participation.user_id %}
+                        {% if tour_participation %}
                         <form action="" method="post">
                             <td><a href="{{ url_for('leavetour', id=tour.id, user_id = current_user.id) }}"><button type = "submit" class = "btn btn-secondary btn-sm btn-danger">{{ ('Leave') }}</a></button></td>
                         </form>
@@ -73,7 +73,7 @@
         </table>
         <br>
 
-        {% if current_user.id == tour_participation.user_id %}
+        {% if tour_participation %}
         <tr>
                         <form action="" method="post">
                                 {{ form.hidden_tag() }}

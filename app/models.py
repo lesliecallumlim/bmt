@@ -21,17 +21,20 @@ class TourParticipant(database.Model):
         database.session.commit()
 
     @classmethod
-    def has_participated(cls, tour_id, tour_user_id):
-        return cls.query.filter(and_(cls.tour_id == tour_id, cls.user_id == tour_user_id)).first()
+    def has_participated(cls, tour_id, tour_user_id, tour_participation = []):
+        tour_participation = cls.query.filter(and_(cls.tour_id == tour_id, cls.user_id == tour_user_id)).first()
+        return tour_participation
 
     @classmethod
-    def get_participants(cls, tour_id, participants = None):
+    def get_participants(cls, tour_id, participants = []):
         participants = cls.query.filter(cls.tour_id == tour_id).first()
         return participants
 
     @classmethod
-    def get_all_feedback(cls, tour_id):
-        return cls.query.filter(and_(cls.tour_id == tour_id,cls.tour_user_feedback != None)).all()
+    def get_all_feedback(cls, tour_id, feedback = []):
+        feedback = cls.query.filter(and_(cls.tour_id == tour_id,cls.tour_user_feedback != None)).all()
+        return feedback
+
 
 class User(UserMixin, database.Model):
     id = database.Column(database.Integer, primary_key=True)

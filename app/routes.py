@@ -92,34 +92,27 @@ def viewtour(id):
         
         #Get list of participants
         participants = TourParticipant().get_participants(tour_id = id)
+        
+        #Init form
+        form = FeedbackForm()
 
         #Check if there are people init
         if participants is not None:
             # tour_participation = participants.has_participated(user_id = current_user.id)
             tour_participation = participants.has_participated(tour_id = id, tour_user_id = current_user.id)
             feedback = participants.get_all_feedback(tour_id = id)
+            #Set feedback, commit, and redirect if form is valid
+            if form.validate_on_submit():
+                tour_participation.set_feedback(form.tour_feedback.data)
+                flash('Thank you for your feedback.', 'success')
+                redirect(url_for('viewtour', id = id))
+            elif request.method == 'GET' and tour_participation is not None:
+                form.tour_feedback.data = tour_participation.tour_user_feedback
 
-        #Otherwise just return an empty list
+        # Otherwise just return an empty list
         else:
             tour_participation = []
             feedback = []
-
-        #Init form
-        form = FeedbackForm()
-
-        if tour_participation != []:
-            #Validates the form
-            if form.validate_on_submit():
-
-                #Set feedback and redirects
-                tour_participation.set_feedback(form.tour_feedback.data)
-                flash('Thank you for your feedback.', 'success')
-                # redirect(url_for('index'))
-
-            #If this is a GET request, prepopulate the fields if previously already populated.
-            elif request.method == 'GET' and tour_participation is not None:
-                form.tour_feedback.data = tour_participation.tour_user_feedback
-        redirect(url_for('viewtour', id = id))
     
     else:
         flash('You need to login or register first!', 'warning')
@@ -132,6 +125,7 @@ def viewtour(id):
                                             tour = tour,\
                                             tour_participation = tour_participation,\
                                             user_feedbacks = feedback)
+
 
 @app.route('/jointour/<int:id>', methods = ['GET', 'POST'])
 def jointour(id):
@@ -188,12 +182,10 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
-@app.route('/leavetour/<int:id><int:user_id>', methods = ['GET', 'POST'])
+@app.route('/leavetour/<int:id>/<int:user_id>', methods = ['GET', 'POST'])
 def leavetour(id, user_id):
-    
-    # t = TourParticipant().get_participants(tour_id = id)
-    t2 = TourParticipant().has_participated(tour_id = id, tour_user_id = user_id)
-    t2.delete_participation(tour_id = id)
+    leave = TourParticipant().has_participated(tour_id = id, tour_user_id = user_id)
+    leave.delete_participation(tour_id = id)
     flash('Deleted', 'warning')
     return redirect(url_for('viewtour', id = id, user_id = user_id))
 
