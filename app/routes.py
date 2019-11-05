@@ -82,34 +82,56 @@ def editprofile(id):
 
     return render_template('editprofile.html', id = current_user.id, user = user, form = form)
 
-    #else:
-     #   flash('You need to login or register first!', 'warning')
-      #  return redirect(url_for('login'))
-
+#View tour controller
 @app.route('/viewtour/<int:id>', methods=['GET', 'POST'])
 def viewtour(id):
+    #Check for auth
     if current_user.is_authenticated:
-        tour = Tour().get_tour(id = id)  
-        tour_owner = tour.user_id
-        tour_participation = TourParticipant().has_participated(tour_id = id, user_id = current_user.id)
-        participant = TourParticipant.query.filter(and_(TourParticipant.tour_id == id, TourParticipant.tour_user_feedback.isnot(None))).all()
-    
+        #Get the tour description
+        tour = Tour().get_tour(id = id) 
+        
+        #Get list of participants
+        participants = TourParticipant().get_participants(tour_id = id)
+
+        #Check if there are people init
+        if participants is not None:
+            # tour_participation = participants.has_participated(user_id = current_user.id)
+            tour_participation = participants.has_participated(tour_id = id, tour_user_id = current_user.id)
+            feedback = participants.get_all_feedback(tour_id = id)
+
+        #Otherwise just return an empty list
+        else:
+            tour_participation = []
+            feedback = []
+
+        #Init form
         form = FeedbackForm()
 
-        if form.validate_on_submit():
-            tour_participation.tour_user_feedback = form.tour_feedback.data
-            database.session.commit()
-            flash('Thank you for your feedback.', 'success')
+        if tour_participation != []:
+            #Validates the form
+            if form.validate_on_submit():
 
-        elif request.method == 'GET' and tour_participation is not None:
-            form.tour_feedback.data = tour_participation.tour_user_feedback
+                #Set feedback and redirects
+                tour_participation.set_feedback(form.tour_feedback.data)
+                flash('Thank you for your feedback.', 'success')
+                # redirect(url_for('index'))
+
+            #If this is a GET request, prepopulate the fields if previously already populated.
+            elif request.method == 'GET' and tour_participation is not None:
+                form.tour_feedback.data = tour_participation.tour_user_feedback
+        redirect(url_for('viewtour', id = id))
     
     else:
         flash('You need to login or register first!', 'warning')
         return redirect(url_for('login'))
 
     
-    return render_template('viewtour.html', title = 'View Tour', tour_owner = tour_owner, form = form, tour = tour, tour_participation = tour_participation, user_feedbacks = participant)
+    return render_template('viewtour.html', title = 'View Tour',\
+                                            tour_owner = tour.user_id,\
+                                            form = form,\
+                                            tour = tour,\
+                                            tour_participation = tour_participation,\
+                                            user_feedbacks = feedback)
 
 @app.route('/jointour/<int:id>', methods = ['GET', 'POST'])
 def jointour(id):
@@ -120,8 +142,6 @@ def jointour(id):
     elif current_user.id == tour.user_id:
         flash('You cannot join your own tour!', 'warning')
     else:
-        # tour_participation = TourParticipant.query.filter(TourParticipant.tour_id == id and TourParticipation.user_id == current_user.id).first()
-    
         join = TourParticipant(user_id = current_user.id, tour_id = id)
         database.session.add(join)
         database.session.commit()
@@ -170,9 +190,10 @@ def logout():
 
 @app.route('/leavetour/<int:id><int:user_id>', methods = ['GET', 'POST'])
 def leavetour(id, user_id):
-    tour = TourParticipant.query.filter_by(tour_id = id, user_id = user_id).first()
-    database.session.delete(tour)
-    database.session.commit()
+    
+    # t = TourParticipant().get_participants(tour_id = id)
+    t2 = TourParticipant().has_participated(tour_id = id, tour_user_id = user_id)
+    t2.delete_participation(tour_id = id)
     flash('Deleted', 'warning')
     return redirect(url_for('viewtour', id = id, user_id = user_id))
 
