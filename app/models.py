@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask_login import UserMixin
 from app import database, login
-
+from sqlalchemy import and_
 
 class TourParticipant(database.Model):
     id = database.Column(database.Integer, primary_key=True)
@@ -10,6 +10,8 @@ class TourParticipant(database.Model):
     tour_user_rating = database.Column(database.Float)
     tour_user_feedback = database.Column(database.String(128))
 
+    def has_participated(self, tour_id, user_id):
+        return self.query.filter(and_(self.tour_id == tour_id, self.user_id == user_id)).first()
 
 class User(UserMixin, database.Model):
     id = database.Column(database.Integer, primary_key=True)
@@ -37,6 +39,11 @@ class Tour(database.Model):
     ratings  = database.Column(database.Float)
     f_status = database.Column(database.Integer)
 
+    def get_tour(self, id):
+        return self.query.get(id)
+
+    def get_tours(self):
+        return self.query.filter(self.f_status == None)
 
 @login.user_loader
 def load_user(id):

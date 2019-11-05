@@ -5,3 +5,4 @@ lib
 lib4
 bin
 var
+app.db

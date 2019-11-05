@@ -13,7 +13,8 @@ def index():
     else:
         user = 'stranger'
     page = request.args.get('page', 1, type=int) 
-    tour = Tour.query.filter(Tour.f_status == None).paginate(page, app.config['POSTS_PER_PAGE'], False)
+    tour = Tour().get_tours()
+    tour = tour.paginate(page, app.config['POSTS_PER_PAGE'], False)
     next_url = url_for('index', page=tour.next_num) \
         if tour.has_next else None
     prev_url = url_for('index', page=tour.prev_num) \
@@ -88,9 +89,9 @@ def editprofile(id):
 @app.route('/viewtour/<int:id>', methods=['GET', 'POST'])
 def viewtour(id):
     if current_user.is_authenticated:
-        tour = Tour.query.get(id)   
-        tour_owner = Tour.query.filter_by(user_id = current_user.id).first()
-        tour_participation = TourParticipant.query.filter(and_(TourParticipant.tour_id == id, TourParticipant.user_id == current_user.id)).first()
+        tour = Tour().get_tour(id = id)  
+        tour_owner = tour.user_id
+        tour_participation = TourParticipant().has_participated(tour_id = id, user_id = current_user.id)
         participant = TourParticipant.query.filter(and_(TourParticipant.tour_id == id, TourParticipant.tour_user_feedback.isnot(None))).all()
     
         form = FeedbackForm()
