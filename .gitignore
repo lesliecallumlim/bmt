@@ -1,9 +1,7 @@
 __pycache__
 *.pyc
-venv
 lib
 lib4
 bin
 var
 app.db
-vs.code-workspace
