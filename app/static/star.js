@@ -30,6 +30,10 @@ $(document).ready(function()
     });
       SetRatingStar();
     
+    function reload(url)
+    {
+      window.location.href = url;
+    }  
     //   var my_url = function(my_id)
     //   { 
     //     return "{{ url_for('rate', id='abc') }}".replace('abc', rating_system);

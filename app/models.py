@@ -10,29 +10,52 @@ class TourParticipant(database.Model):
     tour_user_rating = database.Column(database.Float)
     tour_user_feedback = database.Column(database.String(128))
 
-    def set_feedback(cls, feedback):
-        cls.tour_user_feedback = feedback
+    #Initialise the values and add a custom property
+    def __init__(self, current_tour, **kwargs):
+        super(TourParticipant, self).__init__(**kwargs)
+        # self.tour_id = current_tour
+        self.current_tour = current_tour
+
+    #Get current tour participants
+    # @classmethod
+    def get_participants(self):
+        return self.query.filter(self.tour_id == self.current_tour).all()
+
+    #Set feedback
+    # @classmethod
+    def set_feedback(self, feedback):
+        # cls.tour_user_feedback = feedback
+        participants = get_participants()
+        participants.feedback = feedback
         database.session.commit()
+
+    def join_tour(self, user_id):
+        self.user_id = user_id
+        self.tour_id = self.current_tour
+        database.session.add(self)
+        database.session.commit()
+
     
-    @classmethod
-    def delete_participation(cls, tour_id):
-        to_delete = cls.query.filter(cls.tour_id == tour_id).first()
+    # @classmethod
+    def delete_participation(self):
+        to_delete = has_participated()
         database.session.delete(to_delete)
         database.session.commit()
 
-    @classmethod
-    def has_participated(cls, tour_id, tour_user_id, tour_participation = []):
-        tour_participation = cls.query.filter(and_(cls.tour_id == tour_id, cls.user_id == tour_user_id)).first()
+    # @classmethod
+    def has_participated(self, tour_user_id, tour_participation = []):
+        tour_participation = self.query.filter(and_(self.user_id == tour_user_id, self.tour_id == self.current_tour)).all()
+        print(tour_participation)
         return tour_participation
 
-    @classmethod
-    def get_participants(cls, tour_id, participants = []):
-        participants = cls.query.filter(cls.tour_id == tour_id).first()
-        return participants
+    #@classmethod
+    # def get_participants(cls, tour_id, participants = []):
+        # participants = cls.query.filter(cls.tour_id == tour_id).first()
+        # return participants
 
-    @classmethod
-    def get_all_feedback(cls, tour_id, feedback = []):
-        feedback = cls.query.filter(and_(cls.tour_id == tour_id,cls.tour_user_feedback != None)).all()
+    # @classmethod
+    def get_all_feedback(self, feedback = []):
+        feedback = self.query.filter(and_(self.tour_user_feedback != None, self.tour_id == self.current_tour)).all()
         return feedback
 
 

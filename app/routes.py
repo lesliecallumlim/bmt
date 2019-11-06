@@ -91,7 +91,10 @@ def viewtour(id):
         tour = Tour().get_tour(id = id) 
         
         #Get list of participants
-        participants = TourParticipant().get_participants(tour_id = id)
+        # participants = TourParticipant().get_participants(tour_id = id)
+        
+        participants = TourParticipant(current_tour = id)
+        print(participants)
         
         #Init form
         form = FeedbackForm()
@@ -99,8 +102,8 @@ def viewtour(id):
         #Check if there are people init
         if participants is not None:
             # tour_participation = participants.has_participated(user_id = current_user.id)
-            tour_participation = participants.has_participated(tour_id = id, tour_user_id = current_user.id)
-            feedback = participants.get_all_feedback(tour_id = id)
+            tour_participation = participants.has_participated(tour_user_id = current_user.id)
+            feedback = participants.get_all_feedback()
             #Set feedback, commit, and redirect if form is valid
             if form.validate_on_submit():
                 tour_participation.set_feedback(form.tour_feedback.data)
@@ -136,9 +139,10 @@ def jointour(id):
     elif current_user.id == tour.user_id:
         flash('You cannot join your own tour!', 'warning')
     else:
-        join = TourParticipant(user_id = current_user.id, tour_id = id)
-        database.session.add(join)
-        database.session.commit()
+        join = TourParticipant(current_tour = id)
+        join.join_tour(user_id = current_user.id)
+        # database.session.add(join)
+        # database.session.commit()
         flash('You joined the tour' , 'success')
     return redirect(url_for('viewtour', id = id))
 
@@ -184,8 +188,8 @@ def logout():
 
 @app.route('/leavetour/<int:id>/<int:user_id>', methods = ['GET', 'POST'])
 def leavetour(id, user_id):
-    leave = TourParticipant().has_participated(tour_id = id, tour_user_id = user_id)
-    leave.delete_participation(tour_id = id)
+    leave = TourParticipant(id).has_participated(tour_user_id = user_id)
+    leave.delete_participation()
     flash('Deleted', 'warning')
     return redirect(url_for('viewtour', id = id, user_id = user_id))
 
