@@ -94,8 +94,8 @@ def viewtour(id):
         # participants = TourParticipant().get_participants(tour_id = id)
         
         participants = TourParticipant(current_tour = id)
-        print(participants)
-        
+        # print(participants)
+        # participants_ = TourParticipant(current_tour = id)
         #Init form
         form = FeedbackForm()
 
@@ -103,6 +103,7 @@ def viewtour(id):
         if participants is not None:
             # tour_participation = participants.has_participated(user_id = current_user.id)
             tour_participation = participants.has_participated(tour_user_id = current_user.id)
+            print(tour_participation)
             feedback = participants.get_all_feedback()
             #Set feedback, commit, and redirect if form is valid
             if form.validate_on_submit():
@@ -111,6 +112,7 @@ def viewtour(id):
                 redirect(url_for('viewtour', id = id))
             elif request.method == 'GET' and tour_participation is not None:
                 form.tour_feedback.data = tour_participation.tour_user_feedback
+                # form.tour_feedback.data = 
 
         # Otherwise just return an empty list
         else:

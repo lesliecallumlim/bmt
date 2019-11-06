@@ -14,12 +14,20 @@ class TourParticipant(database.Model):
     def __init__(self, current_tour, **kwargs):
         super(TourParticipant, self).__init__(**kwargs)
         # self.tour_id = current_tour
-        self.current_tour = current_tour
+        # self._current_tour = current_tour
+        # self.init_on_load()
+        res = self.query.filter(self.tour_id == current_tour)
+        self.__dict__ = res.__dict__
 
+
+    # @database.reconstructor
+    # def init_on_load(self):
+        # self._current_tour = self._current_tour
+        
     #Get current tour participants
     # @classmethod
     def get_participants(self):
-        return self.query.filter(self.tour_id == self.current_tour).all()
+        return self.query.filter(self.tour_id == self._current_tour)
 
     #Set feedback
     # @classmethod
@@ -31,7 +39,7 @@ class TourParticipant(database.Model):
 
     def join_tour(self, user_id):
         self.user_id = user_id
-        self.tour_id = self.current_tour
+        self.tour_id = self._current_tour
         database.session.add(self)
         database.session.commit()
 
@@ -44,7 +52,8 @@ class TourParticipant(database.Model):
 
     # @classmethod
     def has_participated(self, tour_user_id, tour_participation = []):
-        tour_participation = self.query.filter(and_(self.user_id == tour_user_id, self.tour_id == self.current_tour)).all()
+        # tour_participation = self.query.filter(and_(self.user_id == tour_user_id, self.tour_id == self.current_tour)).all()
+        tour_participation = self.query.filter(self.user_id == tour_user_id).first()
         print(tour_participation)
         return tour_participation
 
@@ -55,7 +64,7 @@ class TourParticipant(database.Model):
 
     # @classmethod
     def get_all_feedback(self, feedback = []):
-        feedback = self.query.filter(and_(self.tour_user_feedback != None, self.tour_id == self.current_tour)).all()
+        feedback = self.query.filter(and_(self.tour_user_feedback != None, self.tour_id == self._current_tour)).all()
         return feedback
 
 
