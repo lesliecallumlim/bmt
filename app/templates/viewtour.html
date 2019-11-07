@@ -75,7 +75,8 @@
 
         {% if tour_participation %}
         <tr>
-                        <form onsubmit = reload("{{url_for('viewtour', id = tour.id)}}") action="" method="post">
+                        
+                        <form id = "feedback"  method="post">        
                                 {{ form.hidden_tag() }}
                                 <p>
                                     {{ form.tour_feedback.label }}<br>

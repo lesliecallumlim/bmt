@@ -25,30 +25,17 @@ $(document).ready(function()
             var rate = ($('input.rating-value').val());
             var url = $("#rating_system").attr("text") + "/" + rate;
             window.location.href = url;
-            console.log(url)
         }
     });
-      SetRatingStar();
-    
-    function reload(url)
+    SetRatingStar();
+
+    function refreshPage()
     {
-      window.location.href = url;
-    }  
-    //   var my_url = function(my_id)
-    //   { 
-    //     return "{{ url_for('rate', id='abc') }}".replace('abc', rating_system);
-    //   }
-
-    //   function id(my_id)
-    //   { 
-    //       return "{{ url_for('rate', id="abc") }}".replace('#abc#', my_id);
-    //   }
+      window.location.reload();
+    }
   
-      
-
-      $(function()
-      {
-          $('[data-toggle="tooltip"]').tooltip()
-      })
-
+    $(function()
+    {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
 });

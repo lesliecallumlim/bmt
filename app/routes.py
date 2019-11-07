@@ -40,7 +40,6 @@ def deletetour(id):
 def deleteuser(id):
     user = User.query.get(id)
     if current_user.access == 'admin':
-        # database.session.delete(user)
         user.f_status = 1
         database.session.commit()
         flash('Deleted.', 'warning')
@@ -91,28 +90,23 @@ def viewtour(id):
         tour = Tour().get_tour(id = id) 
         
         #Get list of participants
-        # participants = TourParticipant().get_participants(tour_id = id)
+        participants = TourParticipant().get_participants(tour_id = id)
         
-        participants = TourParticipant(current_tour = id)
-        # print(participants)
-        # participants_ = TourParticipant(current_tour = id)
         #Init form
         form = FeedbackForm()
 
         #Check if there are people init
         if participants is not None:
             # tour_participation = participants.has_participated(user_id = current_user.id)
-            tour_participation = participants.has_participated(tour_user_id = current_user.id)
-            print(tour_participation)
-            feedback = participants.get_all_feedback()
+            tour_participation = TourParticipant().has_participated(tour_id = id, tour_user_id = current_user.id)
+            feedback = TourParticipant().get_all_feedback(tour_id = id)
             #Set feedback, commit, and redirect if form is valid
             if form.validate_on_submit():
                 tour_participation.set_feedback(form.tour_feedback.data)
                 flash('Thank you for your feedback.', 'success')
-                redirect(url_for('viewtour', id = id))
+                return redirect(url_for('viewtour', id = id))
             elif request.method == 'GET' and tour_participation is not None:
                 form.tour_feedback.data = tour_participation.tour_user_feedback
-                # form.tour_feedback.data = 
 
         # Otherwise just return an empty list
         else:
@@ -141,10 +135,9 @@ def jointour(id):
     elif current_user.id == tour.user_id:
         flash('You cannot join your own tour!', 'warning')
     else:
-        join = TourParticipant(current_tour = id)
-        join.join_tour(user_id = current_user.id)
-        # database.session.add(join)
-        # database.session.commit()
+        join = TourParticipant(user_id = current_user.id, tour_id = id)
+        database.session.add(join)
+        database.session.commit()
         flash('You joined the tour' , 'success')
     return redirect(url_for('viewtour', id = id))
 
@@ -190,7 +183,7 @@ def logout():
 
 @app.route('/leavetour/<int:id>/<int:user_id>', methods = ['GET', 'POST'])
 def leavetour(id, user_id):
-    leave = TourParticipant(id).has_participated(tour_user_id = user_id)
+    leave = TourParticipant().has_participated(tour_id = id, tour_user_id = user_id)
     leave.delete_participation()
     flash('Deleted', 'warning')
     return redirect(url_for('viewtour', id = id, user_id = user_id))
