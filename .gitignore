@@ -1,7 +1,3 @@
 __pycache__
 *.pyc
-lib
-lib4
-bin
-var
 app.db
