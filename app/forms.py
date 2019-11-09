@@ -11,7 +11,6 @@ class LoginForm(FlaskForm):
     remember_me = BooleanField('Remember Me')
     submit = SubmitField('Sign In')
 
-
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     name = StringField('Name', validators=[DataRequired()])
@@ -39,12 +38,14 @@ class CreateTour(FlaskForm):
     end_date = DateField('End Date', format='%Y-%m-%d')
     submit = SubmitField('Publish')
 
+    # Dates that are invalid are automatically rejected
     def validate(self):
         result = super(CreateTour, self).validate()
         if (self.start_date.data > self.end_date.data):
-            return False
+            raise ValidationError('Please enter a start date that is earlier than the end date!')
         else:
             return result
+
 class EditProfile(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     name = StringField('Name', validators=[DataRequired()])
@@ -52,6 +53,10 @@ class EditProfile(FlaskForm):
     description = TextAreaField('Description')
     submit = SubmitField('Submit')
 
+    # Basically what the entailing functions does is that it overrides the default init method 
+    # with a series of additional parameters that receives the current username and
+    # the email. With that, we prevent users from changing to email/user that is the same
+    # to that of the another user.
     def __init__(self, curr_username, curr_email, *args, **kwargs):
         super(EditProfile, self).__init__(*args, **kwargs)
         self.curr_username = curr_username

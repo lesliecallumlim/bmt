@@ -26,6 +26,10 @@
                         <td>{{tour.end_date}}</td>
                 </tr>
                 <tr>
+                        <th>Tour Owner</th>
+                        <td><a href = "{{url_for('profile', id = tour.user_id)}}" style = "color: black;">{{tour_username}}</a></td>
+                </tr>
+                <tr>
                     <th>Ratings</th>
                     <td>
                         {% if current_user.id != tour_participation.user_id %}

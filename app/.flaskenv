@@ -1,1 +1,2 @@
 FLASK_APP=bmt.py
+FLASK_DEBUG=1
