@@ -276,7 +276,7 @@ def edittour(id):
 @app.route('/rateprofile/<int:id>/<int:rating>', methods = ['GET', 'POST'])
 def rateprofile(id, rating):
     # tour_part = TourParticipant().has_participated(tour_id = id, tour_user_id = current_user.id)
-    feedback = UserFeedback.get_feedback(user_id = id)
+    feedback = UserFeedback().get_feedback(user_id = id)
     has_feedback = UserFeedback().has_feedback(target_user = id, by_user_id = current_user.id)
     # Aggregate up all the previous user ratings
     prev_user_rating = UserFeedback().get_all_ratings(user_id = id)
