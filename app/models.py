@@ -73,9 +73,9 @@ class UserFeedback(database.Model):
     by_user_id = database.Column(database.Integer)
 
     # Get all feedback inclusive of ratings
-    # @staticmethod
-    def get_feedback(user_id):
-        feedback = UserFeedback.query.filter(UserFeedback.user_id == user_id)
+    @classmethod
+    def get_feedback(cls, target_user):
+        feedback = cls.query.filter(cls.user_id == target_user)
         return feedback
     
     # Get all ratings
