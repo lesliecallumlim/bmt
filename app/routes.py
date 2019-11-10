@@ -173,7 +173,9 @@ def jointour(id):
     elif current_user.id == tour.user_id:
         flash('You cannot join your own tour!', 'warning')
     else:
-        TourParticipant.join_tour(user_id = current_user.id, tour_id = id)
+        t = TourParticipant(user_id = current_user.id, tour_id = id)
+        database.session.add(t)
+        database.session.commit()
         flash('You joined the tour' , 'success')
     return redirect(url_for('viewtour', id = id))
 

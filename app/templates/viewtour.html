@@ -54,8 +54,8 @@
                 </tr>
                 {% if current_user.id != tour.user_id %}
                 <tr>    
-                        {% if tour_participation %}
                         <th>Join</th>
+                        {% if tour_participation %}
                         <form action="" method="post">
                             <td><a href="{{ url_for('leavetour', id=tour.id, user_id = current_user.id) }}"><button type = "submit" class = "btn btn-secondary btn-sm btn-danger">{{ ('Leave') }}</a></button></td>
                         </form>
