@@ -53,7 +53,7 @@
         </table>
         </div>
         
-        {% if tour_participation %}
+        {% if current_user.id != user.id %}
                         <form id = "feedback"  method="post">        
                                 {{ form.hidden_tag() }}
                                 <p>
@@ -67,8 +67,34 @@
                         </form>
 
         {% endif %}
-
-        </tbody>
-        </table>
+        
+        <h3>What other people say.</h3>
+        <table class = "table table-striped table-hover table-bordered table-responsive left">
+                <tr>
+                        <th>User ID</th>
+                        <th>Feedback</th>
+                        <th>Rating</th>
+                </tr>
+                {% for user_feedback in user_feedbacks %}
+                        {% if user_feedback.user_id is not none %}
+                        <tr>
+                                <td>{{user_feedback.by_user_id}}</td>
+                                <td>{{user_feedback.user_feedback}}</td>
+                                <td>                        
+                                        <div class="star-rating main" data-toggle = "tooltip" data-placement="right" title = "{{ user_feedback.user_rating }}  stars" > 
+                                        <span class="fa fa-star-o" data-rating="1"></span>
+                                        <span class="fa fa-star-o" data-rating="2"></span>
+                                        <span class="fa fa-star-o" data-rating="3"></span>
+                                        <span class="fa fa-star-o" data-rating="4"></span>
+                                        <span class="fa fa-star-o" data-rating="5"></span>
+                                        <input type="hidden" name="rating-stars" class="rating-value" value="{{ user_feedback.user_rating }}">
+                               </div>
+                                </td>
+                        </tr>
+                        {% else %}
+                        <tr><td>No feedback yet!</td></tr>
+                {% endif %}
+                        
+                {% endfor %}
         </div>
 {% endblock %}

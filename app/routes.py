@@ -49,9 +49,31 @@ def deleteuser(id):
 # View profile
 @app.route('/profile/<int:id>', methods = ['GET', 'POST'])
 def profile(id):
+    # If login-ed
     if current_user.is_authenticated:
         user = User.get_user(id)
-        return render_template('profile.html', user = user)
+        # Render feedback form
+        form = FeedbackForm()
+
+        # Get list of feedbacks
+        user_feedback = UserFeedback().get_actual_feedback(target_user = id)
+
+        # Let's check if the user had already provided a feedback, otherwise create a new record
+        feedback = UserFeedback().has_feedback(target_user = id, by_user_id = current_user.id)
+        if form.validate_on_submit():
+            if feedback is None or feedback == []:
+                feedback = UserFeedback(user_id = id, by_user_id = current_user.id,\
+                                        user_feedback = form.tour_feedback.data)
+                database.session.add(feedback)
+                database.session.commit()
+            else:
+                feedback.set_user_feedback(form.tour_feedback.data)
+            flash('Thank you for your feedback.', 'success')
+            return redirect(url_for('profile', id = id))
+                
+        elif request.method == 'GET' and feedback is not None:
+            form.tour_feedback.data = feedback.user_feedback
+        return render_template('profile.html', user = user, form = form, feedback = feedback, user_feedbacks = user_feedback)
     else:
         flash('You need to login or register first!', 'warning')
         return redirect(url_for('login'))
@@ -65,6 +87,7 @@ def editprofile(id):
     
     if current_user.id == id:
         user = User.get_user(id)
+
         form = EditProfile(curr_username = current_user.username, curr_email = current_user.email)
 
         if form.validate_on_submit():
@@ -284,6 +307,7 @@ def rateprofile(id, rating):
     total_user_rating_count = UserFeedback().get_user_rating_count(user_id = id, by_user_id = current_user.id)
     # New user rating
     rating = float(rating)
+    # Get details of the user in question
     user = User.get_user(user_id = id)
     #Set rating
     if has_feedback == []:
@@ -291,7 +315,7 @@ def rateprofile(id, rating):
         database.session.add(user_feedback)
         database.session.commit()
     else:
-        UserFeedback().set_user_rating(new_rating = rating)
+        has_feedback.set_user_rating(new_rating = rating)
     # If it has not been already rated
     if total_user_rating_count > 0:
         user_ratings = float(prev_user_rating.prev_rating+rating)/float(total_user_rating_count+1)

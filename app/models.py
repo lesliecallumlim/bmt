@@ -78,6 +78,11 @@ class UserFeedback(database.Model):
         feedback = cls.query.filter(cls.user_id == target_user)
         return feedback
     
+    @classmethod
+    def get_actual_feedback(cls, target_user, feedback = []):
+        feedback = cls.query.filter(and_(cls.user_id == target_user, cls.user_feedback.isnot(None)))
+        return feedback
+
     # Get all ratings
     @staticmethod
     def get_all_ratings(user_id, ratings = None):        
@@ -92,15 +97,24 @@ class UserFeedback(database.Model):
                 UserFeedback.user_rating != None, UserFeedback.by_user_id != by_user_id)).count()
         return count
 
+    # Check if there is a feedback
+    @classmethod
     def has_feedback(cls, target_user, by_user_id, feedback = None):
         feedback = cls.query.filter(and_(cls.user_id == target_user, cls.by_user_id == by_user_id)).first()
         return feedback
 
-    @classmethod
-    def set_user_rating(cls, new_rating):
-        if cls.user_rating != new_rating:
-            cls.user_rating = new_rating
+    # Set user rating
+    def set_user_rating(self, new_rating):
+        if self.user_rating != new_rating:
+            self.user_rating = new_rating
             database.session.commit() 
+
+    # Set feedback
+    def set_user_feedback(self, feedback):
+        self.user_feedback = feedback
+        database.session.commit()
+    
+    
 
 class User(UserMixin, database.Model):
     id = database.Column(database.Integer, primary_key=True)
@@ -200,3 +214,5 @@ class Tour(database.Model):
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
+# class DBHandler(BaseQuery):

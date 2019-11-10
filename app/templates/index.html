@@ -24,8 +24,8 @@
                             <td>{{tour.tour_name}}</td>
                             <td>{{tour.tour_location}}</td>
                             <td>{{tour.tour_price}}</td>
-                            <td>{{tour.start_date}}</td>
-                            <td>{{tour.end_date}}</td>
+                            <td>{{tour.start_date|datetime}}</td>
+                            <td>{{tour.end_date|datetime}}</td>
                             <td>
                                 <div class="star-rating main" data-toggle = "tooltip" data-placement="right" title = "{{ tour.ratings }}  stars" > 
                                 <span class="fa fa-star-o" data-rating="1"></span>
