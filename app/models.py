@@ -210,6 +210,18 @@ class Tour(database.Model):
         tour_list = Tour.query.filter(Tour.f_status != True)
         return tour_list
 
+    # Search
+    @staticmethod
+    def search_tour(string, type, tour_list = []):
+        _string = "%{}%".format(string)
+        if type == 'Tour Name':
+            tour_list = Tour.query.filter(Tour.tour_name.like(_string))
+        elif type == 'Location':
+            tour_list = Tour.query.filter(Tour.tour_location.like(_string))
+        elif type == 'Max Price':
+            tour_list = Tour.query.filter(Tour.tour_price <= float(string))
+        return tour_list
+
 
 @login.user_loader
 def load_user(id):

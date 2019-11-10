@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, TextAreaField, FloatField
+from wtforms import StringField, SelectField, PasswordField, BooleanField, SubmitField, IntegerField, TextAreaField, FloatField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Optional
 from wtforms.fields.html5 import DateField
 from app.models import User
@@ -75,3 +75,19 @@ class EditProfile(FlaskForm):
 class FeedbackForm(FlaskForm):
     tour_feedback = TextAreaField('What do you think?',validators=[DataRequired()])
     submit = SubmitField('Submit')
+
+class SearchForm(FlaskForm):
+    search = StringField('search', [DataRequired()])
+    _choice = [('Tour Name', 'Tour Name'), ('Location', 'Location'), ('Max Price', 'Max Price')]
+    choice = SelectField('type', choices = _choice)
+    submit = SubmitField('Search')
+
+    # def validate(self):
+    #     result = super(SearchForm, self).validate()
+    #     if self.choice == ('Max Price', 'Max Price'):
+    #         try:
+    #             f = float(self.search)
+    #         except:
+    #             raise ValidationError('Please enter a valid value!')
+    #     else:
+    #         return result

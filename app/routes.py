@@ -2,7 +2,7 @@
 # the Boundary (the html pages under ./templates) and the Entity (models.py) 
 
 from flask import render_template, url_for, flash, redirect, request
-from app.forms import LoginForm, RegistrationForm, FeedbackForm, CreateTour, EditProfile
+from app.forms import LoginForm, RegistrationForm, FeedbackForm, SearchForm, CreateTour, EditProfile
 from app.models import User, Tour, TourParticipant, UserFeedback
 from flask_login import current_user, login_user, logout_user, login_required
 from app import app, database
@@ -334,3 +334,26 @@ def rateprofile(id, rating):
         user.set_user_rating(new_rating = rating)
     flash('Successfully rated!', 'success')
     return redirect(url_for('profile', id = id))
+
+
+# Search 
+@app.route('/search', methods = ['GET', 'POST'])
+def search():
+    form = SearchForm()
+    search_string = form.search.data
+    search_type = form.choice.data
+    if search_type == 'Max Price':
+        try:
+            float(search_string)
+        except:
+            flash('Invalid input!', 'danger')
+            return redirect(url_for('search'))
+    if form.validate_on_submit():
+        results = Tour.search_tour(string = search_string, type = search_type)
+        page = request.args.get('page', 1, type=int) 
+        results = results.paginate(page, 10, False)
+        next_url = url_for('search', page=results.next_num) if results.has_next else None
+        prev_url = url_for('search', page=results.prev_num) if results.has_prev else None
+        return render_template('search.html', form = form,\
+                                results = results.items, next_url = next_url, prev_url = prev_url)
+    return render_template('search.html', form = form, results = [])
