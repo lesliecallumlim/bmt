@@ -2,7 +2,7 @@ $(document).ready(function()
 {
     var $star_rating = $('.star-rating');
 
-    var SetRatingStar = function() 
+    var SetStarRating = function() 
     {  
       $star_rating.each(setStars);
     };
@@ -27,12 +27,8 @@ $(document).ready(function()
             window.location.href = url;
         }
     });
-    SetRatingStar();
+    SetStarRating();
 
-    function refreshPage()
-    {
-      window.location.reload();
-    }
   
     $(function()
     {

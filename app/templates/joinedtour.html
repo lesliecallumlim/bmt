@@ -89,5 +89,12 @@
                 {% endfor %}
 </tbody>
 </table>
+
+{% if prev_url %}
+<a href="{{ prev_url }}"><button  style = "float: left; color: black" class = "btn square submit">{{ ('Back') }}</button></a>
+{% endif %}
+{% if next_url %}
+<a href="{{ next_url }}"><button style = "float: right; color: black" class = "btn square submit">{{ ('Next') }}</button></a>
+{% endif %}
 </div>
 {% endblock %}

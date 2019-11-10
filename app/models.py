@@ -38,7 +38,7 @@ class TourParticipant(database.Model):
         return participants
 
     # Returns a mutable object which can be used to modify the object state
-    # More specifially, returns a record if the user has participated in the tour  
+    # More specifically, returns a record if the user has participated in the tour  
     @classmethod
     def has_participated(cls, tour_id, tour_user_id, tour_participation = []):
         tour_participation = cls.query.filter(and_(cls.tour_id == tour_id, cls.user_id == tour_user_id)).first()
@@ -85,9 +85,9 @@ class UserFeedback(database.Model):
 
     # Get all ratings
     @staticmethod
-    def get_all_ratings(user_id, ratings = None):        
+    def get_all_ratings(user_id, by_user_id, ratings = None):        
         rating = UserFeedback.query.with_entities(func.sum(UserFeedback.user_rating).label('prev_rating'))\
-                    .filter(UserFeedback.user_id == user_id).first()
+                    .filter(and_(UserFeedback.user_id == user_id, UserFeedback.by_user_id != by_user_id)).first()
         return rating
 
     # Get list of users who rated
@@ -138,7 +138,7 @@ class User(UserMixin, database.Model):
         user_list = cls.query.all()
         return user_list
 
-    # Delete tour: we technically don't delete the user but rather,
+    # Delete user: we technically don't delete the user but rather,
     # we just stop displaying it in the user list across
     def delete_user(self, access):
         # Only admins can delete  

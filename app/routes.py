@@ -26,7 +26,12 @@ def index():
 def joinedtours():
     tourparted = User.get_participated_tours(user_id = current_user.id)
     tourcreated = User.get_created_tours(user_id = current_user.id)
-    return render_template('joinedtour.html',  tourcreated = tourcreated, tourpart = tourparted)
+    # Add pagination for created tours only
+    page = request.args.get('page', 1, type=int) 
+    tourcreated = tourcreated.paginate(page, 10, False)
+    next_url = url_for('joinedtours', page=tourcreated.next_num) if tourcreated.has_next else None
+    prev_url = url_for('joinedtours', page=tourcreated.prev_num) if tourcreated.has_prev else None
+    return render_template('joinedtour.html',  tourcreated = tourcreated.items, tourpart = tourparted, next_url = next_url, prev_url = prev_url)
 
 # Delete tour controller
 @app.route('/deletetour/<int:id>', methods=['GET', 'POST'])
@@ -302,7 +307,7 @@ def rateprofile(id, rating):
     feedback = UserFeedback().get_feedback(target_user = id)
     has_feedback = UserFeedback().has_feedback(target_user = id, by_user_id = current_user.id)
     # Aggregate up all the previous user ratings
-    prev_user_rating = UserFeedback().get_all_ratings(user_id = id)
+    prev_user_rating = UserFeedback().get_all_ratings(user_id = id, by_user_id = current_user.id)
     # Count all of the previous tour participants who rated except for the user
     total_user_rating_count = UserFeedback().get_user_rating_count(user_id = id, by_user_id = current_user.id)
     # New user rating
@@ -310,7 +315,7 @@ def rateprofile(id, rating):
     # Get details of the user in question
     user = User.get_user(user_id = id)
     #Set rating
-    if has_feedback == []:
+    if has_feedback == [] or has_feedback is None:
         user_feedback = UserFeedback(user_id = id, by_user_id = current_user.id, user_rating = rating)
         database.session.add(user_feedback)
         database.session.commit()

@@ -7,7 +7,7 @@
         <br>
         {{ form.hidden_tag() }}
         <fieldset>
-            {{ form.username(class_ = "simpleform", placeholder = "Username.")}}
+            {{ form.username(class_ = "simpleform", placeholder = "Username.")}}<br>
             {% for error in form.username.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
