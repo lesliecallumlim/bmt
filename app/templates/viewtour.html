@@ -52,9 +52,10 @@
                         </div>
                     </td>
                 </tr>
-                <tr>
-                        <th>Join</th>
+                {% if current_user.id != tour.user_id %}
+                <tr>    
                         {% if tour_participation %}
+                        <th>Join</th>
                         <form action="" method="post">
                             <td><a href="{{ url_for('leavetour', id=tour.id, user_id = current_user.id) }}"><button type = "submit" class = "btn btn-secondary btn-sm btn-danger">{{ ('Leave') }}</a></button></td>
                         </form>
@@ -64,6 +65,7 @@
                         </form>
                         {% endif %}
                 </tr>
+                {% endif %}
                 <tr>
                         {% if current_user.id == tour.user_id or current_user.access == 'admin' %}
                         <th>Modify</th>
@@ -76,6 +78,29 @@
         </tbody>
         </table>
         <br>
+        {% if tour.user_id == current_user.id %}
+        <h3>Participants.</h3>
+        <table class = "table table-striped table-hover table-bordered table-responsive left">
+                <tr>
+                        <th>User ID</th>
+                        <th>User Name</th>
+                        <th>Email</th>
+                </tr>
+                {% for user_joined in user_joined_list %}
+                        {% if user_joined.id is not none %}
+                        <tr>
+                                <td>{{user_joined.id}}</td>
+                                <td><a href = "{{ url_for('profile', id = user_joined.id) }}" style = "color: black;">{{user_joined.username}}</a></td>
+                                <td>{{user_joined.email}}</td>
+                        </tr>
+                        {% else %}
+                        <tr><td>No joinees yet!</td></tr>
+                {% endif %}
+                {% endfor %}
+        </tbody>
+        </table>
+        {% endif %}
+
 
         {% if tour_participation %}
                         
@@ -92,7 +117,7 @@
                         </form>
 
         {% endif %}
-
+        <br>
         <h3>What other people say.</h3>
         <table class = "table table-striped table-hover table-bordered table-responsive left">
                 <tr>

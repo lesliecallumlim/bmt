@@ -126,6 +126,8 @@ def viewtour(id):
         
         #Get list of participants
         participants = TourParticipant().get_participants(tour_id = id)
+        #Get usernames & email of participants
+        user_joined_list = User.query.join(TourParticipant, (TourParticipant.user_id == User.id)).filter(TourParticipant.tour_id == id)
         tour_username = Tour().get_tour_owner(tour_id = id).username
         #Init form
         form = FeedbackForm()
@@ -157,7 +159,8 @@ def viewtour(id):
                                             form = form,\
                                             tour = tour,\
                                             tour_participation = tour_participation,\
-                                            user_feedbacks = feedback,
+                                            user_feedbacks = feedback,\
+                                            user_joined_list = user_joined_list,\
                                             tour_username = tour_username)
 
 
