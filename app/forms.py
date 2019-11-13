@@ -38,19 +38,23 @@ class CreateTour(FlaskForm):
     end_date = DateField('End Date', format='%Y-%m-%d')
     submit = SubmitField('Publish')
 
+    def __init__(self, _start_date = None, _end_date = None, *args, **kwargs):
+        super(CreateTour, self).__init__(*args, **kwargs)
+        self._start_date = self.start_date.data
+        self._end_date = self.end_date.data
+
+    
     # Dates that are invalid are automatically rejected
     def validate(self):
-        result = super(CreateTour, self).validate()
-        if (self.start_date.data > self.end_date.data):
+        if (self._start_date > self._end_date):
             raise ValidationError('Please enter a start date that is earlier than the end date!')
-        else:
-            return result
 
 class EditProfile(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     name = StringField('Name', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     description = TextAreaField('Description')
+    password = PasswordField('Password', validators = [DataRequired()])
     submit = SubmitField('Submit')
 
     # Basically what the entailing functions does is that it overrides the default init method 

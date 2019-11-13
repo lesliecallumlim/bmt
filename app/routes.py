@@ -100,6 +100,7 @@ def editprofile(id):
             user.username = form.username.data
             user.name = form.name.data
             user.description = form.description.data
+            user.password = form.password.data
             database.session.commit()
             flash('Edited successfully.', 'success')
 
