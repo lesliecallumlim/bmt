@@ -37,17 +37,23 @@ class CreateTour(FlaskForm):
     start_date = DateField('Start Date', format='%Y-%m-%d')
     end_date = DateField('End Date', format='%Y-%m-%d')
     submit = SubmitField('Publish')
-
-    def __init__(self, _start_date = None, _end_date = None, *args, **kwargs):
-        super(CreateTour, self).__init__(*args, **kwargs)
-        self._start_date = self.start_date.data
-        self._end_date = self.end_date.data
+    
+    def validate(self):
+        result = super(CreateTour, self).validate()
+        if (self.start_date.data > self.end_date.data):
+            return False
+        else:
+            return result
+    # def __init__(self, _start_date = None, _end_date = None, *args, **kwargs):
+        # super(CreateTour, self).__init__(*args, **kwargs)
+        # self._start_date = self.start_date.data
+        # self._end_date = self.end_date.data
 
     
     # Dates that are invalid are automatically rejected
-    def validate(self):
-        if (self._start_date > self._end_date):
-            raise ValidationError('Please enter a start date that is earlier than the end date!')
+    # def validate(self):
+        # if (self._start_date > self._end_date):
+            # raise ValidationError('Please enter a start date that is earlier than the end date!')
 
 class EditProfile(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
