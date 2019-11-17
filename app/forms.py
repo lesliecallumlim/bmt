@@ -39,21 +39,11 @@ class CreateTour(FlaskForm):
     submit = SubmitField('Publish')
     
     def validate(self):
-        result = super(CreateTour, self).validate()
+        result = super(CreateTour, self)
         if (self.start_date.data > self.end_date.data):
             return False
         else:
             return result
-    # def __init__(self, _start_date = None, _end_date = None, *args, **kwargs):
-        # super(CreateTour, self).__init__(*args, **kwargs)
-        # self._start_date = self.start_date.data
-        # self._end_date = self.end_date.data
-
-    
-    # Dates that are invalid are automatically rejected
-    # def validate(self):
-        # if (self._start_date > self._end_date):
-            # raise ValidationError('Please enter a start date that is earlier than the end date!')
 
 class EditProfile(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -92,12 +82,3 @@ class SearchForm(FlaskForm):
     choice = SelectField('type', choices = _choice)
     submit = SubmitField('Search')
 
-    # def validate(self):
-    #     result = super(SearchForm, self).validate()
-    #     if self.choice == ('Max Price', 'Max Price'):
-    #         try:
-    #             f = float(self.search)
-    #         except:
-    #             raise ValidationError('Please enter a valid value!')
-    #     else:
-    #         return result

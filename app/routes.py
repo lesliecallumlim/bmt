@@ -272,6 +272,8 @@ def create():
         database.session.commit()
         flash('Congratulations, you have added a tour.', 'success')
         return redirect(url_for('create'))
+    elif not form.validate_on_submit() and form.start_date.data is not None:
+        flash('You need to enter a start date that is earlier than the end date!', 'danger')
     return render_template('create.html', title='Create Tour', form=form)
 
 # Edit Tours
@@ -283,8 +285,16 @@ def edittour(id):
         
     tour = Tour.get_tour(tour_id = id)
     form = CreateTour()
+    
+    if request.method == 'GET':
+        form.tour_name.data = tour.tour_name
+        form.tour_description.data = tour.tour_description
+        form.tour_location.data = tour.tour_location
+        form.tour_price.data = tour.tour_price
+        form.start_date.data = tour.start_date
+        form.end_date.data = tour.end_date
 
-    if form.validate_on_submit():
+    elif form.validate_on_submit():
         tour.user_id = current_user.get_id()
         tour.tour_name = form.tour_name.data
         tour.tour_description = form.tour_description.data 
@@ -294,14 +304,10 @@ def edittour(id):
         tour.end_date = form.end_date.data
         database.session.commit()
         flash('Edited successfully.', 'success')
+        
+    elif (not form.validate_on_submit()):
+        flash('You need to enter a start date that is earlier than the end date!', 'danger')
 
-    elif request.method == 'GET':
-        form.tour_name.data = tour.tour_name
-        form.tour_description.data = tour.tour_description
-        form.tour_location.data = tour.tour_location
-        form.tour_price.data = tour.tour_price
-        form.start_date.data = tour.start_date
-        form.end_date.data = tour.end_date
     return render_template('edittour.html', id = id, form = form)
 
 

@@ -5,21 +5,22 @@ from datetime import date
 countries = ['China', 'Singapore', 'Malaysia', 'Cambodia', 'Australia', 'Japan', 'New Zealand', 'Indonesia']
 tour = ['Explore', 'Enjoy', 'Experience']
 
-
-for n in range(20+1):
-    tour_location = countries[random.randrange(len(countries))]
-    tour_name = tour[random.randrange(len(tour))] + ' ' + tour_location
-    tour_description = 'Enjoy a fun-filled adventure in ' + tour_location + '! Bringing you highlight reel of the country! '
-    tour_price = random.randrange(100)
-    lower_bound = date.today().toordinal()
-    upper_bound = date.today().replace(day=31, month=12).toordinal()
-    start_date = date.fromordinal(random.randint(lower_bound, upper_bound))
-    end_date = date.fromordinal(random.randint(start_date.toordinal(), upper_bound))
-    ratings = round(random.uniform(1, 5),1)
-
-    tour = Tour(user_id = 1, tour_location = tour_location, tour_name = tour_name,\
+# 100*10 permutations
+for n in range(10+1):
+    # Get list of user IDs
+    users = User.get_all_users()
+    for user in users:
+        tour_location = countries[random.randrange(len(countries))]
+        tour_name = tour[random.randrange(len(tour))] + ' ' + tour_location
+        tour_description = 'Enjoy a fun-filled adventure in ' + tour_location + '! Bringing you highlight reel of the country! '
+        tour_price = random.randrange(100)
+        lower_bound = date.today().toordinal()
+        upper_bound = date.today().replace(day=31, month=12).toordinal()
+        start_date = date.fromordinal(random.randint(lower_bound, upper_bound))
+        end_date = date.fromordinal(random.randint(start_date.toordinal(), upper_bound))
+        ratings = round(random.uniform(1, 5),1)
+        _tour = Tour(user_id = user.id, tour_location = tour_location, tour_name = tour_name,\
                 tour_description = tour_description, tour_price = tour_price,\
                 start_date = start_date, end_date = end_date, ratings = ratings)
-
-    database.session.add(u)
-    database.session.commit()
+        database.session.add(_tour)
+        database.session.commit()
