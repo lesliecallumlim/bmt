@@ -3,6 +3,7 @@
 <br>
     <form class = "formcontainer" action="" method="post">
         <h3 class = "form_class">Edit your tour.</h3>
+        <br>
             {{ form.hidden_tag() }}
             <fieldset>
                 {{ form.tour_name.label }}<br>
@@ -11,7 +12,7 @@
                 <span style="color: red;">[{{ error }}]</span>
                 {% endfor %}
             </fieldset>
-            <fieldset>g
+            <fieldset>
                 {{ form.tour_description.label }}<br>
                 {{ form.tour_description(class_ = "simpleform") }}<br>
                 {% for error in form.tour_description.errors %}
@@ -47,6 +48,6 @@
                 <span style="color: red;">[{{ error }}]</span>
                 {% endfor %}
             </fieldset>
-            <fieldset>{{ form.submit() }}</fieldset>
+            <fieldset>{{ form.submit(class_ = "simpleform submit") }}</fieldset>
         </form>
 {% endblock %}

@@ -100,23 +100,25 @@
         </tbody>
         </table>
         {% endif %}
-
+        <br>
 
         {% if tour_participation %}
-                        
-                        <form id = "feedback"  method="post">        
-                                {{ form.hidden_tag() }}
-                                <p>
+        <table>                
+        <form action="" method="post">
+        <h3 class = "form_class">Leave a feedback.</h3>
+                  {{ form.hidden_tag() }}
+                                <fieldset>
                                     {{ form.tour_feedback.label }}<br>
-                                    {{ form.tour_feedback(cols = "50", rows = "5") }}<br>
+                                    {{ form.tour_feedback(class_ = "simpleform")}}<br>
                                     {% for error in form.tour_feedback.errors %}
                                     <span style="color: red;">[{{ error }}]</span>
                                     {% endfor %}
-                                </p>
-                                <p>{{ form.submit() }}</p>
+                                </fieldset>
+                                <fieldset>{{ form.submit(class_ = "simpleform submit") }}</fieldset>
                         </form>
 
         {% endif %}
+        </table>
         <br>
         <h3>What other people say.</h3>
         <table class = "table table-striped table-hover table-bordered table-responsive left">
