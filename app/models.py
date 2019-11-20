@@ -135,7 +135,7 @@ class User(UserMixin, database.Model):
     # Return users
     @classmethod
     def get_all_users(cls, user_list = []):
-        user_list = cls.query.all()
+        user_list = cls.query.filter(cls.f_status != True)
         return user_list
 
     # Delete user: we technically don't delete the user but rather,
